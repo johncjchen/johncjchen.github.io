@@ -1,9 +1,12 @@
 import './style.css';
 
-import * as THREE from 'three';
+//import * as THREE from 'three';
 
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { BoxGeometry } from 'three';
+import * as THREE from '/node_modules/three/build/three.module.js';
+
+//import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+//import { BoxGeometry } from './three';
+
 
 const scene = new THREE.Scene();
 
@@ -86,7 +89,7 @@ scene.background = spaceTexture;
 
 const johnTexture = new THREE.TextureLoader().load('portrait.jpg');
 const john = new THREE.Mesh(
-  new BoxGeometry(3, 3, 3), 
+  new THREE.BoxGeometry(3, 3, 3), 
   new THREE.MeshBasicMaterial({map: johnTexture})
 );
 
