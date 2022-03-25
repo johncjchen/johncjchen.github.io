@@ -42,8 +42,10 @@ icosahedron.position.y = 7;
 icosahedron.position.z = 10;
 
 const cylGeometry = new THREE.CylinderGeometry( 2, 2, 8, 32, 30, false, 0 , 2*Math.PI);
-const cylMaterial = new THREE.MeshStandardMaterial( {color: 0xfd5602} );
-//const cylMaterial = new THREE.TextureLoader().load('black_white.jpg');
+//const cylMaterial = new THREE.MeshStandardMaterial( {color: 0xfd5602} );
+const cylTexture = new THREE.TextureLoader().load('blackwhite.png');
+const cylNorTexture = new THREE.TextureLoader().load('normal_grill.jpeg')
+const cylMaterial = new THREE.MeshStandardMaterial({map: cylTexture, normalMap: cylNorTexture});
 const cylinder = new THREE.Mesh(cylGeometry, cylMaterial);
 
 scene.add(cylinder);

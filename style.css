@@ -60,6 +60,10 @@ section {
   margin-bottom: var(--spacing);
 }
 
+section h2 {
+  color: yellow;
+}
+
 blockquote {
   margin: 0;
   padding: 0;
@@ -93,4 +97,21 @@ credit p {
 
 .left {
   grid-column: 6 / 12;
+}
+
+scroll {
+  grid-column: 8 / span 3;
+  margin-top: 500px;
+}
+
+scroll p {
+  color: yellow;
+  background-color: black;
+  font-size: 2rem;
+  display: inline;
+  line-height: 1;
+  font-family: elevon, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  padding: 1rem;
 }
