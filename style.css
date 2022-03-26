@@ -165,3 +165,30 @@ header h1:hover {
 .project-pictures:hover {
 	opacity: 50%
 }
+
+/* About Me */
+.two-column-wrapper {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+}
+
+.profile-image img {
+	max-width: 100%;
+}
+
+.profile-image {
+	padding: 30px;
+}
+
+.profile-content {
+	color: white;
+	padding: 30px;
+}
+
+.profile-content h1 {
+	color: red;
+}
+
+.socials {
+	list-style: none;
+}
