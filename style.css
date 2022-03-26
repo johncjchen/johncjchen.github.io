@@ -115,3 +115,53 @@ scroll p {
   font-style: normal;
   padding: 1rem;
 }
+
+section h2 a {
+  color: yellow;
+}
+
+header h1:hover {
+  color: red;
+}
+
+#back {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: black;
+	height: 100%;
+	width: 100%;
+}
+
+/* Projects */
+
+.three-row-wrapper{
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+}
+
+.project-description {
+	color: white;
+	padding: 40px;
+}
+
+.project-pictures {
+	padding: 40px;
+	opacity: 100%;
+	transition: opacity 0.5s;
+	
+}
+
+.project-description h1 {
+	color: red;
+}
+
+.project-pictures img {
+	max-width: 100%;
+}
+
+.project-pictures:hover {
+	opacity: 50%
+}

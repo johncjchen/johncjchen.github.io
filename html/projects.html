@@ -3,25 +3,57 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link href="./style.css" rel="stylesheet" type="text/css" />
+    <link href="../style.css" rel="stylesheet" type="text/css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>John's Website</title>
+    <title>John's Projects</title>
   </head>
-  <body>
-
-    <canvas id = "bg"></canvas>
+  <body id ="back">
 
     <main>
+        <div class="content-wrapper">
+			<!--<div class="three-row-wrapper">-->
 
-      <header>
-        <h1>John Chen</h1>
-        <p>Mechanical Engineering Student @ UC Santa Barbara</p>
-        <p>Welcome to my website!</p>
-      </header>
+				<div class="two-column-wrapper">
+					<div class="project-pictures">
+						<img src="John Chen.JPG">
+					</div>
 
-      <scroll>
-        <p>Scroll down!</p>
-      </scroll>
+					<div class="project-description">
+						<h1>Programming</h1>
+
+						<p>In my spare time, I also love to learn new programming languages, both back-end and front-end. It's been a passion of mine ever since I learned Java at my high school's AP Computer Science class. Currently, I am exploring a few different topics in computer science, such as machine learning, computer vision, games (Snake, Tetris), and GUIs.
+						</p>
+					</div>
+				</div>
+
+				<div class="two-column-wrapper">
+					<div class="project-pictures">
+						<img src="John Chen.JPG">
+					</div>
+
+					<div class="project-description">
+						<h1>Electronics</h1>
+
+						<p>I've not yet looked too deeply into the world of electronics, but as an engineer, I still have a deep interest in creating and designing electronics. Ultimately, electronics are the blood and stimulus for mechanisms in the modern world. Presently, I am trying to work on small projects with the Elegoo UNO R3 kit.
+						</p>
+					</div>
+				</div>
+
+				<div class="two-column-wrapper">
+					<div class="project-pictures">
+						<img src="John Chen.JPG">
+					</div>
+
+					<div class="project-description">
+						<h1>Mechanics</h1>
+
+						<p>Being an engineer, it's quite obvious that I have an intense fascination with the mechanisms of the world. I've especially taken an interest in prosthetics hands, muscle biomimicry (i.e. electro-active polymers, and water pumps. 
+						</p>
+					</div>
+				</div>
+				
+			<!--</div>-->
+		</div>
 
 
       <blockquote>
@@ -45,13 +77,13 @@
       </section>
 
       <section class="light">
-        <h2><a href="/html/projects.html">Projects</a></h2>
+        <h2>Projects</h2>
 
         <p>
           I have completed a few projects both for school and some for myself. For example, I machined an air piston using a mill and a lathe at the school's machine shop, and I also designed and built an Arduino-controlled, line-tracing vehicle. As for my personal interests, I have designed and 3D printed my own modular power cable docking station. I am currently in the works on the design of a hovercraft, which will be my first step into more advanced mechatronics projects like a CIWS platform. 
         </p>
 
-        <h2>Leadership Experience</h2>
+        <h2>Leadershiip Experience</h2>
 
         <h4>Engineering Student Council Treasurer</h4>
         
@@ -97,21 +129,6 @@
 
       </section>
 
-      <section>
-        <h2>Contact Me</h2>
-          <ul>
-            <li>
-              <p>Email: johnchenemp@gmail.com</p>
-            </li>
-            <li>
-              <p>LinkedIn: https://www.linkedin.com/in/johncjchen/</p>
-            </li>
-            <li>
-              <p>Github: https://github.com/johncjchen</p>
-            </li>
-          </ul>
-      </section>
-
       <blockquote>
         <p>Thanks for reading thus far!</p>
       </blockquote>
@@ -121,20 +138,6 @@
       </credit>
 
     </main>
-
-    <!--<script type="module" src="/main.js"></script>-->
-    <!--<script src="https://rawgit.com/mrdoob/three.js/dev/build/three.js"></script>-->
-    <!--<script src="./three.js"></script>-->
-    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
-
-		<script type="importmap">
-			{
-				"imports": {
-					"three": "/three/build/three.module.js"
-				}
-			}
-		</script>
-    <script src="main.js" type="module"></script>
     
 
   </body>
