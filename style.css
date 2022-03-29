@@ -133,6 +133,10 @@ header h1:hover {
   background-color: black;
 	height: 100%;
 	width: 100%;
+  background-image: url("Blueprint.jpeg");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
 }
 
 /* Projects */
@@ -313,4 +317,24 @@ nav-bar li:last-child {
 
 body {
   margin: 0px;
+}
+
+#projects {
+  grid-column: 2 / span 10;
+}
+
+#backb {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: black;
+	height: 100%;
+	width: 100%;
+  background-image: url("Digital_Screen.jpeg");
+  /*background-size: 100% auto;*/
+  /*background-size: 100% 100%;*/
+  background-size: cover;
+  /*background-position: 50% 50%;*/
 }
