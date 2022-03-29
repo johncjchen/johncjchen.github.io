@@ -192,3 +192,125 @@ header h1:hover {
 .socials {
 	list-style: none;
 }
+
+/* Nav Bar */
+
+/*
+nav-bar {
+  position:absolute;
+  position: top left;
+  background-color: black;
+  opacity: 0.5;
+  width: 100%;
+}
+
+nav-bar a {
+  font-family: elevon, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  color: white;
+}
+
+nav-bar a:hover {
+  color: red;
+}
+*/
+
+/*
+nav-bar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  background-color: black;
+}
+
+nav-bar li {
+  display: inline;
+}
+*/
+
+/*
+nav-bar {
+  position: absolute;
+  position: top left;
+  width: 100%;
+}
+*/
+
+/*
+nav-bar {
+  font-family: elevon, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 1rem;
+}
+*/
+
+nav-bar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: black;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  opacity: 100%;
+  font-family: elevon, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 1rem;
+}
+
+nav-bar li {
+  float: left;
+  
+}
+
+
+nav-bar li:hover {
+  background-color: red;
+}
+
+
+nav-bar li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 22px;
+  text-decoration: none;
+  
+}
+
+/* Change the link color to #111 (black) on hover */
+nav-bar li a:hover {
+  /*background-color: #111;*/
+  color: black;
+}
+
+/*
+nav-bar li a:hover:not(.active) {
+  background-color: red;
+}
+*/
+
+.active {
+  background-color: white;
+  color: black;
+}
+
+
+/*
+nav-bar li {
+  border-right: 1px solid #bbb;
+}
+*/
+/*
+nav-bar li:last-child {
+  border-right: none;
+}
+*/
+
+body {
+  margin: 0px;
+}

@@ -25,7 +25,7 @@ renderer.render(scene, camera);
 
 const geometry = new THREE.TorusGeometry(10, 3, 16, 100);
 //const material = new THREE.MeshStandardMaterial({color: 0xff0000});
-const torusTexture = new THREE.TextureLoader().load('red_flow_hi.jpeg');
+const torusTexture = new THREE.TextureLoader().load('/images/red_flow_hi.jpeg');
 const material = new THREE.MeshStandardMaterial({map:torusTexture});
 const torus = new THREE.Mesh(geometry, material);
 
@@ -43,8 +43,8 @@ icosahedron.position.z = 10;
 
 const cylGeometry = new THREE.CylinderGeometry( 2, 2, 8, 32, 30, false, 0 , 2*Math.PI);
 //const cylMaterial = new THREE.MeshStandardMaterial( {color: 0xfd5602} );
-const cylTexture = new THREE.TextureLoader().load('blackwhite.png');
-const cylNorTexture = new THREE.TextureLoader().load('normal_grill.jpeg')
+const cylTexture = new THREE.TextureLoader().load('/images/blackwhite.png');
+const cylNorTexture = new THREE.TextureLoader().load('/images/normal_grill.jpeg')
 const cylMaterial = new THREE.MeshStandardMaterial({map: cylTexture, normalMap: cylNorTexture});
 const cylinder = new THREE.Mesh(cylGeometry, cylMaterial);
 
@@ -86,10 +86,10 @@ function addStar() {
 
 Array(500).fill().forEach(addStar);
 
-const spaceTexture = new THREE.TextureLoader().load('space.jpg');
+const spaceTexture = new THREE.TextureLoader().load('/images/space.jpg');
 scene.background = spaceTexture;
 
-const johnTexture = new THREE.TextureLoader().load('portrait.jpg');
+const johnTexture = new THREE.TextureLoader().load('/images/portrait.jpg');
 const john = new THREE.Mesh(
   new THREE.BoxGeometry(3, 3, 3), 
   new THREE.MeshBasicMaterial({map: johnTexture})
@@ -97,8 +97,8 @@ const john = new THREE.Mesh(
 
 scene.add(john);
 
-const moonTexture = new THREE.TextureLoader().load('moon.jpg');
-const normalTexture = new THREE.TextureLoader().load('normal.jpg');
+const moonTexture = new THREE.TextureLoader().load('/images/moon.jpg');
+const normalTexture = new THREE.TextureLoader().load('/images/normal.jpg');
 
 const moon = new THREE.Mesh(
   new THREE.SphereGeometry(3, 32, 32), 
