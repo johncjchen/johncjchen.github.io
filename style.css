@@ -171,6 +171,11 @@ header h1:hover {
 }
 
 /* About Me */
+.one-column-wrapper {
+	display: grid;
+	grid-template-columns: 1fr;
+}
+
 .two-column-wrapper {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
@@ -320,6 +325,10 @@ body {
 }
 
 #projects {
+  grid-column: 2 / span 10;
+}
+
+#resume {
   grid-column: 2 / span 10;
 }
 

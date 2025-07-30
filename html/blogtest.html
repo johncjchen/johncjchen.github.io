@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Blog</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .header {
+            background-color: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            display: flex;
+            gap: 20px;
+        }
+        .main-content {
+            flex: 3;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .post {
+            margin-bottom: 20px;
+        }
+        .post h2 {
+            color: #2c3e50;
+            margin: 0 0 10px;
+        }
+        .post-meta {
+            color: #777;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+        .post-content {
+            line-height: 1.6;
+        }
+        .sidebar {
+            flex: 1;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-top: 0;
+        }
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        .sidebar ul li {
+            margin: 10px 0;
+        }
+        .sidebar a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 800px) {
+            .container {
+                flex-direction: column;
+                margin: 10px;
+            }
+            .main-content, .sidebar {
+                flex: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>My Blog</h1>
+        <p>Welcome to my thoughts and ideas!</p>
+    </div>
+    <div class="container">
+        <div class="main-content">
+            <div class="post">
+                <h2>Blog Post Title 1</h2>
+                <div class="post-meta">Posted on July 28, 2025 by [Your Name]</div>
+                <div class="post-content">
+                    <p>This is the content of your first blog post. Write about something you're passionate about!</p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+                </div>
+            </div>
+            <div class="post">
+                <h2>Blog Post Title 2</h2>
+                <div class="post-meta">Posted on July 27, 2025 by [Your Name]</div>
+                <div class="post-content">
+                    <p>This is another blog post. Share your ideas, tutorials, or experiences here.</p>
+                    <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar">
+            <h3>Categories</h3>
+            <ul>
+                <li><a href="#">Technology</a></li>
+                <li><a href="#">Lifestyle</a></li>
+                <li><a href="#">Tutorials</a></li>
+                <li><a href="#">Travel</a></li>
+            </ul>
+            <h3>About</h3>
+            <p>Hi, I'm [Your Name]! This blog is where I share my thoughts on [your topics].</p>
+            <h3>Follow Me</h3>
+            <ul>
+                <li><a href="https://x.com/yourprofile">X</a></li>
+                <li><a href="https://linkedin.com/in/yourprofile">LinkedIn</a></li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
