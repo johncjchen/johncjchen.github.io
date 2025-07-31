@@ -14,6 +14,25 @@
     <link href="../style.css" rel="stylesheet" type="text/css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>John's Projects</title>
+
+    <style>
+     .centertext {
+      text-align: center;
+      color: red;
+     }
+     .pdf-container {
+            display: flex;
+            justify-content: center; /* Horizontally center */
+            align-items: center; /* Vertically center (optional) */
+            min-height: 100vh; /* Full viewport height */
+            width: 100%;
+        }
+     iframe {
+         width: 900px; /* Adjust width as needed */
+         height: 600px; /* Adjust height as needed */
+         border: none; /* Remove border */
+     }
+    </style>
   </head>
   <body id ="back">
 
@@ -21,7 +40,7 @@
 
 		<nav-bar>
 			<ul>
-				<li><a href = "/html/index.html">Home</a></li>
+				<li><a href = "/index.html">Home</a></li>
     			<li><a href = "/html/about.html">About Me</a></li>
     			<li><a class = "active" href = "/html/portfolio.html">Portfolio</a></li>
 				<li><a href = "/html/projects.html">Projects</a></li>
@@ -37,56 +56,62 @@
 		-->
 
 		<section id = "projects">
+   <!--SPINE DISCECTOMY TOOL-->
+   <h1 class="centertext">Senior Capstone Project - Spine Discectomy Tool</h1>
 			<div class="two-column-wrapper">
 				<div class="project-pictures">
-					<img src="/images/BikeLightCoilEnclosure.png" alt = "Coil Enclosure">
+					  <iframe src="/PDFs/SeaSpine Final Design Packet.pdf" frameborder="0"></iframe>
 				</div>
 
 				<div class="project-description">
-					<h1>Faraday Bike Light</h1>
-
-					<p>A current interest of mine is creating a bike light that does not seriously impede the rider when generating power. To this end, I definitely did not want to do a dynamo or hub generator powered bike light. As a result, I went with the concept of an inductor-powered bike light. </p>
-					<p>The concept behind this "Faraday" bike light is a (neodymium?) magnet attached to the spokes of the wheel which then passes by the inductor coil, inducing a voltage.</p>
-					<p>The picture to the left shows the enclosure for the inductor coil. There is space within the coil for a magnet to rotate freely and thus add to the changing magnetic field.</p>
-					<p>Link to CAD file: <a href = "https://cad.onshape.com/documents/cf08141d796fe106a0ce8af0/w/5738f5a1b4094ae6ecb008fd/e/14e7322f4b97d05c2b981429?renderMode=0&uiState=6268a6f26973e850c856a1c3">Click Here</a></p>
-					<p>Inspired by <a href = "https://www.reelight.com/">Reelight</a>.</p>
+     <p>The goal of this project was to design, manufacture, and test</p>
 				</div>
 			</div>
 
-			<div class="two-column-wrapper">
+   <div class="pdf-container">
+    <iframe src="/PDFs/SeaSpine Final Design Packet.pdf"></iframe>
+   </div>
+			
+   <!--LIGHTSABER-->
+   <h1 class="centertext">Junior Design - Vine Lightsaber</h1>
+   <div class="two-column-wrapper">
 				<div class="project-pictures">
-					<img src="/images/LittleBot.png" alt = "Little Bot">
+					<iframe src="/PDFs/JuniorDesignLightSaber.pdf" width="900" height="1000" frameborder="0"></iframe>
 				</div>
 
 				<div class="project-description">
 					<h1>Little BattleBot</h1>
 
-					<p>This was a fun little CAD for a simple lightweight BattleBot. It is essentially a wedge with two wheels attached. It is modeled with a Teensy 4.1 and two Greartisan DC motors. Wheels are modeled since I hadn't looked up on the web. </p>
-					<p>It's an untested design which I'm certain should work upon fixing up the electronics and code. I'm definitely looking forward to implementing an IR transmitter/reciever setup and utilizing a second Arduino for the input controls. I would love to design a second larger iteration with an actuated appendage (lever arm or spinnig disc).</p>
 					<p>Link to CAD file: <a href = "https://cad.onshape.com/documents/421b100cdbb8956fab5872f9/w/25c9b3017bdb9d2d1d670ee1/e/f7809bd54c8bf48964f0d3a2?renderMode=0&uiState=6360a07bc2e9bf4c86072faf">Click Here</a></p>
 				</div>
 			</div>
 
+   <div class="pdf-container">
+    <iframe src="/PDFs/JuniorDesignLightSaber.pdf"></iframe>
+   </div>
+
+   <!--HAND EXOSKELETON-->
+   <h1 class="centertext">U of Edinburgh - Hand Skeleton</h1>
 			<div class="two-column-wrapper">
 				<div class="project-pictures">
-					<img src="/images/WireHolder1.png" alt = "Wire Station">
+					<iframe src="/PDFs/EdinburghDesignHandExoskeleton.pdf" width="900" height="1000" frameborder="0"></iframe>
 				</div>
 
 				<div class="project-description">
 					<h1>Wire Station</h1>
 
-					<p>This was a quick project I did because of my issues with wire management next to my bed and desk. This wire docking station was specifically built for my bed frame which is to the right of my desk. That is also the general area where I like to charge my electronic devices.</p>
 					<p>Link to CAD file: <a href = "https://cad.onshape.com/documents/11bb1ba27954cdc92a7ade1f/w/976e2dc29ffb31ae05919f58/e/9d7199d04fc807acc9f1aac4?renderMode=0&uiState=624398bd16710016e496f59c">Click Here</a></p>
 					<p>Design Goals and Specifics</p>
 					<ul>
-						<li>Modular -> connectable in pieces like a puzzle</li>
 						<li>Simple yet sturdy -> hook design and gusset</li>
-						<li>Extensive capacity -> spacing for wire goes from large to small to accomodate wires of all types</li>
-						<li>3D-printable -> try to limit overhangs and keep design as simple as possible</li>
 					</ul>
 					<p>On the 3D printing note, the modular pieces are intended to be printed on the flat side with the gusset, but I did encounter an predicament between modularity and 3D-printer satisfaction. However, I placed higher importance on the modularity aspect, especially with how advanced 3D printers have become. Overhangs are hardly an issue anymore.</p>
 				</div>
 			</div>
+
+   <div class="pdf-container">
+    <iframe src="/PDFs/EdinburghDesignHandExoskeleton.pdf"></iframe>
+   </div>
 			<!--
 			<div class="two-column-wrapper">
 				<div class="project-pictures">
