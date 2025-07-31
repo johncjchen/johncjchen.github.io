@@ -1,110 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Me</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-        }
-        .profile-img {
-            display: block;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-        }
-        h2 {
-            color: #2c3e50;
-            margin-top: 30px;
-        }
-        .bio-section {
-            line-height: 1.6;
-            margin-bottom: 20px;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-        }
-        .contact {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .contact a {
-            color: #3498db;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-        .contact a:hover {
-            text-decoration: underline;
-        }
-        @media (max-width: 600px) {
-            .container {
-                margin: 10px;
-                padding: 15px;
-            }
-            .profile-img {
-                width: 120px;
-                height: 120px;
-            }
-        }
-    </style>
-</head>
-<body id="back">
-    <main>
-    
-        <nav-bar>
-			<ul>
-				<li><a href = "/index.html">Home</a></li>
-    			<li><a class = "active" href = "/html/about.html">About Me</a></li>
-    			<li><a href = "/html/portfolio.html">Portfolio</a></li>
-				<li><a href = "/html/projects.html">Projects</a></li>
-				<li><a href = "/html/resume.html">Resume</a></li>
-    			<li><a href = "/html/blog.html">Blog</a></li>
-				<!--<li><a href = "/html/blog.html">Blog</a></li>-->
-			</ul>
-		</nav-bar>
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BF5VLX150F"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-BF5VLX150F');
+    </script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link href="../style.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>John's Website</title>
+  </head>
+  <body>
 
-    <div class="container">
-        <h1>About Me</h1>
-        <img src="path/to/your/profile-picture.jpg" alt="Profile Picture" class="profile-img">
-        <div class="bio-section">
-            <h2>Who I Am</h2>
-            <p>Write about yourself here. For example: I'm [Your Name], a [your profession, e.g., web developer, designer] passionate about [your passion, e.g., creating user-friendly websites].</p>
-        </div>
-        <div class="bio-section">
-            <h2>My Journey</h2>
-            <p>Describe your background or journey. For example: I started my career in [your field] and have worked on [projects or experiences].</p>
-        </div>
-        <div class="bio-section">
-            <h2>My Interests</h2>
-            <p>Share your hobbies or interests. For example: In my free time, I enjoy [hobbies, e.g., hiking, coding side projects, reading].</p>
-        </div>
-        <div class="contact">
-            <p>Contact me at: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
-            <p>
-                <a href="https://linkedin.com/in/yourprofile">LinkedIn</a> |
-                <a href="https://github.com/yourprofile">GitHub</a> |
-                <a href="https://x.com/yourprofile">X</a>
-            </p>
-        </div>
-    </div>
+    <canvas id = "bg"></canvas>
+
+    
+
+    <main>
+
+      <!--
+      <nav-bar>
+        <p><a href = "/html/projects.html">Projects</a></p>
+        <p><a href = "/html/blog.html">Blog</a></p>
+      </nav-bar>
+    -->
+      <nav-bar>
+        <ul>
+          <li><a href = "/index.html">Home</a></li>
+          <li><a class = "active" href = "/html/about.html">About Me</a></li>
+          <li><a href = "/html/portfolio.html">Portfolio</a></li>
+			  	<li><a href = "/html/projects.html">Projects</a></li>
+			  	<li><a href = "/html/resume.html">Resume</a></li>
+          <li><a href = "/html/blog.html">Blog</a></li>
+          <!--<li><a href = "/html/blog.html">Blog</a></li>-->
+        </ul>
+      </nav-bar>
+      
+      <header>
+        <h1>John Chen</h1>
+        <p>Mechanical Engineering Student UC Santa Barbara BS/MS Gradaute</p>
+        <p>Welcome to my website!</p>
+        <p>WEBSITE UNDER CONSTRUCTION!!</p>
+      </header>
+
+      <scroll>
+        <p>Scroll down!</p>
+      </scroll>
+
+
+      <blockquote>
+        <p>I love making stuff, programming, and learning new skills.</p>
+      </blockquote>
+
+      <section>
+        <h2>Introduction</h2>
+        <p>
+          I am a mechanical engineering BS/MS graduate from UC Santa Barbara. My current interests lie in the fields of mechatronics and renewable energies, but I am very open to all other aspects of the mechanical engineering discipline.
+        </p>
+
+        <p>
+          Although I am a ME major, I love programming and all things related. I consider computer science my side passion and look forward to gaining the knowledge and experience necessary begin developing my own apps and bots. As you may be able to tell, my website makes use of JS, HTML, and CSS.
+        </p>
+
+        <p>
+          My third great interest is with machine learning of any type. For the past year, I have been enamored with the concept of computer vision and its various aspects, such as image classification, object tracking, and depth perception. Both MATLAB and Python have provided great outlets for experimenting with ML.
+        </p>
+
+      </section>
+
+      <section class="light">
+        <h2><a href="/html/projects.html">Projects</a></h2>
+
+        <p>
+          I have completed a few projects both for school and some for myself. For example, I machined an air piston using a mill and a lathe at the school's machine shop, and I also designed and built an Arduino-controlled, line-tracing vehicle. As for my personal interests, I have designed and 3D printed my own modular power cable docking station. I am currently in the works on the design of a hovercraft, which will be my first step into more advanced mechatronics projects like a CIWS platform. 
+        </p>
+
+        <h2>Leadership Experience</h2>
+
+        <h4>Engineering Student Council Treasurer</h4>
+        
+        <ul>
+          <li>Manage the club's account and to balance the books, making sure all transactions are accounted for</li>
+          <li>Transfer funds from original school account to a private bank</li>
+        </ul>
+
+        <h4>ASME Sophomore Representative</h4>
+        
+        <ul>
+          <li>Announce ASME club events to hundreds of mechanical engineering students and develop relationships with peers in grade</li>
+        </ul>
+
+      </section>
+
+      <blockquote>
+        <p>The mystery of life isn't a problem to solve, but a reality to experience. <br>-Frank Herbert</p>
+      </blockquote>
+
+      <section class="left">
+        <h2>Work History</h2>
+
+        <h3>Hansma Research Lab</h3>
+        <h4>Undergraduate Research Assistant</h4>
+        <ul>
+          <li>Collaborate with graduate student researchers and faculty in the collection and evaluation of chronic pain research data</li>
+          <li>Create a peak detection code (C++ / Python) using thousands of points collected by a photoplethysmography sensor to determine heart rate
+            variability which, along with a temperature sensor, is then implemented into a hand-held biofeedback device</li>
+          <li>Design and prototype improved biofeedback devices and methods (improve pain scores by at least 1)</li>
+          <li>Solder and repair pain measurement devices, 20+ handheld biofeedback devices, and 20+ novel pulse sensors</li>
+        </ul>
+        <p>
+          I currently work at the Hansma Research Lab, where we work to create chronic pain biofeedback devices and novel methods of calculating biofeedback.
+        </p>
+        <h3>7-Eleven</h3>
+        <h4>Sales Associate</h4>
+        <ul>
+          <li>Checked in merchandise deliveries from vendors and stocked inventory</li>
+          <li>Maintained a clean, customer-friendly environment within the store</li>
+          <li>Rang and drove hundreds of dollars in sales through effective communication with customers</li>
+        </ul>
+
+      </section>
+
+      <section>
+        <h2>Contact Me</h2>
+          <ul>
+            <li>
+              <p>Email: johnchenemp@gmail.com</p>
+            </li>
+            <li>
+              <p>LinkedIn: https://www.linkedin.com/in/johncjchen/</p>
+            </li>
+            <li>
+              <p>Github: https://github.com/johncjchen</p>
+            </li>
+          </ul>
+      </section>
+
+      <blockquote>
+        <p>Thanks for reading thus far!</p>
+      </blockquote>
+      
+      <credit>
+        <p>Website base code credit goes to Jeff Delaney at Fireship! </p>
+      </credit>
+
     </main>
-</body>
+
+    <!--<script type="module" src="/main.js"></script>-->
+    <!--<script src="https://rawgit.com/mrdoob/three.js/dev/build/three.js"></script>-->
+    <!--<script src="./three.js"></script>-->
+    <script async src="https://unpkg.com/es-module-shims@1.3.6/dist/es-module-shims.js"></script>
+
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "/three/build/three.module.js"
+				}
+			}
+		</script>
+    <script src="/main.js" type="module"></script>
+    
+
+  </body>
+  
 </html>

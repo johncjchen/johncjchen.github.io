@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .profile-img {
+            display: block;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        h2 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+        .bio-section {
+            line-height: 1.6;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+        .contact {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .contact a {
+            color: #3498db;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .contact a:hover {
+            text-decoration: underline;
+        }
+        @media (max-width: 600px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            .profile-img {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body id="back">
+    <main>
+    
+        <nav-bar>
+			<ul>
+				<li><a href = "/index.html">Home</a></li>
+    			<li><a class = "active" href = "/html/about.html">About Me</a></li>
+    			<li><a href = "/html/portfolio.html">Portfolio</a></li>
+				<li><a href = "/html/projects.html">Projects</a></li>
+				<li><a href = "/html/resume.html">Resume</a></li>
+    			<li><a href = "/html/blog.html">Blog</a></li>
+				<!--<li><a href = "/html/blog.html">Blog</a></li>-->
+			</ul>
+		</nav-bar>
+
+    <div class="container">
+        <h1>About Me</h1>
+        <img src="path/to/your/profile-picture.jpg" alt="Profile Picture" class="profile-img">
+        <div class="bio-section">
+            <h2>Who I Am</h2>
+            <p>Write about yourself here. For example: I'm [Your Name], a [your profession, e.g., web developer, designer] passionate about [your passion, e.g., creating user-friendly websites].</p>
+        </div>
+        <div class="bio-section">
+            <h2>My Journey</h2>
+            <p>Describe your background or journey. For example: I started my career in [your field] and have worked on [projects or experiences].</p>
+        </div>
+        <div class="bio-section">
+            <h2>My Interests</h2>
+            <p>Share your hobbies or interests. For example: In my free time, I enjoy [hobbies, e.g., hiking, coding side projects, reading].</p>
+        </div>
+        <div class="contact">
+            <p>Contact me at: <a href="mailto:your.email@example.com">your.email@example.com</a></p>
+            <p>
+                <a href="https://linkedin.com/in/yourprofile">LinkedIn</a> |
+                <a href="https://github.com/yourprofile">GitHub</a> |
+                <a href="https://x.com/yourprofile">X</a>
+            </p>
+        </div>
+    </div>
+    </main>
+</body>
+</html>
