@@ -89,7 +89,7 @@ Array(500).fill().forEach(addStar);
 const spaceTexture = new THREE.TextureLoader().load('/images/space.jpg');
 scene.background = spaceTexture;
 
-const johnTexture = new THREE.TextureLoader().load('/images/portrait.jpg');
+const johnTexture = new THREE.TextureLoader().load('/images/HeadshotSquare.jpg');
 const john = new THREE.Mesh(
   new THREE.BoxGeometry(3, 3, 3), 
   new THREE.MeshBasicMaterial({map: johnTexture})

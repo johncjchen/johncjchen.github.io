@@ -2608,7 +2608,7 @@ input, select, textarea {
 		background-color: #1f1815;
 		background-attachment: scroll,								scroll;
 		background-image: url("../../images/Sunset.jpg");
-		background-position: top left,							top left;
+		background-position: 100% 0;
 		background-repeat: no-repeat;
 		background-size: auto 120%;
 		color: rgba(255, 255, 255, 0.5);
@@ -3233,3 +3233,95 @@ input, select, textarea {
 			}
 
 	}
+
+
+	
+	nav-bar ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: black;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  opacity: 100%;
+  font-family: elevon, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 1rem;
+		z-index: 1000; /* Ensure nav-bar is above #header */
+	}
+
+nav-bar li {
+  float: left;
+  
+}
+
+
+nav-bar li:hover {
+  background-color: red;
+}
+
+
+nav-bar li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 22px;
+  text-decoration: none;
+  
+}
+
+/* Change the link color to #111 (black) on hover */
+nav-bar li a:hover {
+  /*background-color: #111;*/
+  color: black;
+}
+
+/*
+nav-bar li a:hover:not(.active) {
+  background-color: red;
+}
+*/
+
+.active {
+  background-color: white;
+  color: black;
+}
+
+/* Adjust #header to avoid overlap with nav-bar */
+#header {
+  top: 48px; /* Height of nav-bar (14px padding + 1rem font-size + buffer) */
+  height: calc(100% - 48px); /* Adjust height to account for nav-bar */
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 980px) {
+  nav-bar ul {
+    position: relative; /* Static nav-bar on smaller screens */
+    width: 100%;
+  }
+  #header {
+    top: 48px; /* Keep offset for nav-bar */
+    height: auto; /* Allow natural height */
+  }
+}
+
+#main {
+  margin-left: 35%;
+  max-width: 54em;
+  padding: 8em 4em 4em 4em;
+  width: calc(100% - 35%);
+  margin-top: 48px; /* Offset for nav-bar height */
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 980px) {
+  #main {
+    margin-left: 0;
+    margin-top: 48px; /* Keep offset for nav-bar */
+    padding: 6em 4em;
+    width: 100%;
+  }
+}
