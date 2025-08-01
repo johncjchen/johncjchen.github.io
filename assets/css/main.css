@@ -3238,45 +3238,44 @@ input, select, textarea {
 	
 	nav-bar ul {
   list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
   background-color: black;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  opacity: 100%;
+  position: fixed !important;
+  top: 0 !important;
+  width: 100% !important;
+  opacity: 100% !important;
   font-family: elevon, sans-serif;
   font-weight: 700;
   font-style: normal;
   font-size: 1rem;
-		z-index: 1000; /* Ensure nav-bar is above #header */
+		z-index: 1000 !important; /* Ensure nav-bar is above #header */
 	}
 
 nav-bar li {
-  float: left;
+  float: left !important;
   
 }
 
 
 nav-bar li:hover {
-  background-color: red;
+  background-color: red !important;
 }
 
 
 nav-bar li a {
-  display: block;
+  display: block !important;
   color: white;
-  text-align: center;
-  padding: 14px 22px;
+  text-align: center !important;
+  padding: 14px 22px !important;
   text-decoration: none;
   
 }
 
 /* Change the link color to #111 (black) on hover */
 nav-bar li a:hover {
-  /*background-color: #111;*/
-  color: black;
+  color: black !important;
 }
 
 /*
@@ -3293,7 +3292,15 @@ nav-bar li a:hover:not(.active) {
 /* Adjust #header to avoid overlap with nav-bar */
 #header {
   top: 48px; /* Height of nav-bar (14px padding + 1rem font-size + buffer) */
-  height: calc(100% - 48px); /* Adjust height to account for nav-bar */
+  height: calc(100% - 0px); /* Adjust height to account for nav-bar */
+		/* was -48px */
+}
+
+
+body {	
+		width: 100vw !important;
+		width: 100% !important;
+		margin: 0px auto !important;
 }
 
 /* Responsive adjustments */
