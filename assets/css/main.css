@@ -3236,6 +3236,19 @@ input, select, textarea {
 
 
 	
+	nav-bar {
+  margin: 0 !important;
+  padding: 0 !important;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  z-index: 1000 !important;
+  border: none !important;
+  outline: none !important;
+  box-sizing: border-box !important;
+	}
+
 	nav-bar ul {
   list-style-type: none;
   margin: 0 !important;
@@ -3244,6 +3257,7 @@ input, select, textarea {
   background-color: black;
   position: fixed !important;
   top: 0 !important;
+  left: 0 !important;
   width: 100% !important;
   opacity: 100% !important;
   font-family: elevon, sans-serif;
@@ -3251,11 +3265,19 @@ input, select, textarea {
   font-style: normal;
   font-size: 1rem;
 		z-index: 1000 !important; /* Ensure nav-bar is above #header */
+  border: none !important;
+  border-bottom: none !important;
+  outline: none !important;
+  box-sizing: border-box !important;
+  box-shadow: none !important;
 	}
 
 nav-bar li {
   float: left !important;
-  
+  border: none !important;
+  outline: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 
@@ -3268,8 +3290,15 @@ nav-bar li a {
   display: block !important;
   color: white;
   text-align: center !important;
-  padding: 14px 22px !important;
-  text-decoration: none;
+  padding: 15px 22px !important;
+  text-decoration: none !important;
+  line-height: 1 !important;
+  font-size: 1rem !important;
+  font-family: elevon, sans-serif !important;
+  font-weight: 700 !important;
+  border: none !important;
+  border-bottom: none !important;
+  outline: none !important;
   
 }
 
@@ -3285,13 +3314,13 @@ nav-bar li a:hover:not(.active) {
 */
 
 .active {
-  background-color: white;
-  color: black;
+  background-color: white !important;
+  color: black !important;
 }
 
 /* Adjust #header to avoid overlap with nav-bar */
 #header {
-  top: 48px; /* Height of nav-bar (14px padding + 1rem font-size + buffer) */
+  top: 46px; /* Height of nav-bar (15px padding + 1rem font-size + 15px padding) */
   height: calc(100% - 0px); /* Adjust height to account for nav-bar */
 		/* was -48px */
 }
@@ -3300,7 +3329,7 @@ nav-bar li a:hover:not(.active) {
 body {	
 		width: 100vw !important;
 		width: 100% !important;
-		margin: 0px auto !important;
+		margin: 0px !important;
 }
 
 /* Responsive adjustments */
@@ -3310,7 +3339,7 @@ body {
     width: 100%;
   }
   #header {
-    top: 48px; /* Keep offset for nav-bar */
+    top: 46px; /* Keep offset for nav-bar */
     height: auto; /* Allow natural height */
   }
 }
@@ -3320,14 +3349,14 @@ body {
   max-width: 54em;
   padding: 8em 4em 4em 4em;
   width: calc(100% - 35%);
-  margin-top: 48px; /* Offset for nav-bar height */
+  margin-top: 46px; /* Offset for nav-bar height */
 }
 
 /* Responsive adjustments */
 @media screen and (max-width: 980px) {
   #main {
     margin-left: 0;
-    margin-top: 48px; /* Keep offset for nav-bar */
+    margin-top: 46px; /* Keep offset for nav-bar */
     padding: 6em 4em;
     width: 100%;
   }
