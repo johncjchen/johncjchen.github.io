@@ -3280,6 +3280,9 @@ nav-bar li {
   padding: 0 !important;
 }
 
+nav-bar li.nav-right {
+  float: right !important;
+}
 
 nav-bar li:hover {
   background-color: red !important;
