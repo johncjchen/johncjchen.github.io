@@ -273,9 +273,12 @@ nav-bar ul {
 
 nav-bar li {
   float: left;
-  
+
 }
 
+nav-bar li.nav-right {
+  float: right;
+}
 
 nav-bar li:hover {
   background-color: red;
