@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BF5VLX150F"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-BF5VLX150F');
+    </script>
+    <meta charset="UTF-8" />
+	<link rel="icon" href="../images/Palm.jpg" type="image/x-icon">
+    <link href="../style.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Algotrading Parameter Optimization: Initial Steps (Pt. 2) - John's Blog</title>
+    <style>
+        /* Code block styling for blog posts */
+        .blog-code-block {
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .blog-code-block code {
+            white-space: pre;
+            display: block;
+        }
+
+        .blog-resources {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .blog-resources h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 0, 0.9);
+        }
+
+        .blog-resources ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .blog-resources li {
+            margin-bottom: 0.75rem;
+        }
+
+        .blog-resources a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .blog-resources a:hover {
+            color: red;
+            text-decoration: underline;
+        }
+
+        .blog-post-nav {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .blog-post-nav a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .blog-post-nav a:hover {
+            color: red;
+        }
+    </style>
+  </head>
+  <body id="backb">
+
+    <main>
+
+		<nav-bar>
+			<ul>
+				<li><a href="../index.html">Home</a></li>
+    			<li><a href="about.html">About Me</a></li>
+    			<li><a href="portfolio.html">Portfolio</a></li>
+				<li><a href="resume.html">Resume</a></li>
+    			<li><a class="active" href="blog.html">Blog</a></li>
+    			<li class="nav-right"><a href="https://jadecomet.com">Jade Comet</a></li>
+			</ul>
+		</nav-bar>
+
+        <!-- Blog Post Full Content -->
+        <article class="blog-post-full">
+
+            <!-- Back Navigation -->
+            <nav class="blog-nav">
+                <a href="blog.html" class="back-to-blog">← Back to Blog</a>
+            </nav>
+
+            <!-- Blog Post Header -->
+            <header class="blog-post-header-full">
+                <h1>Algotrading Parameter Optimization and Selection: Initial Steps (Pt. 2)</h1>
+                <div class="blog-post-meta">
+                    <span class="blog-post-date">November 17, 2025</span>
+                    <span class="blog-post-category">Finance & Trading</span>
+                    <span class="blog-post-reading-time">• 5 min read</span>
+                </div>
+            </header>
+
+            <!-- Blog Post Content -->
+            <div class="blog-post-content-full">
+
+                <p class="blog-post-lead">
+                    Welcome back to part two in my series of discovering the optimal set of strategy parameters that is both robust and survivable in the uncharted waters of the future market.
+                </p>
+
+                <p>
+                    Let's start with covering some of the basic groundwork. As I mentioned in Part 1, I will be using Python and the backtesting.py library with the assistance of Claude Code to develop and test my strategy. The yfinance library will be utilized for retrieving historical data from Yahoo Finance's API. I won't go over the strategy I'm actually developing, but let's just make one up right now. It could be a banger.
+                </p>
+
+                <h2>The Strategy</h2>
+
+                <p>
+                    The strategy will be very simple. We will use simple moving averages (SMA) crossovers for entry/exit signals and also add a simple momentum entry signal. Momentum-wise, the strategy will simply count the number of green bars and enter after a threshold has been reached.
+                </p>
+
+                <p>
+                    Signals from SMA crossovers are simple and relatively reliable; although, they may be prone to noise and are, by nature, lagging indicators, which may present problems in the future. Counting green bars is simple enough but does provide a separate complexity to the strategy, which we will explore later in parameter set determination.
+                </p>
+
+                <h2>Testing Environment</h2>
+
+                <p>
+                    Backtesting will be done on TQQQ, a 3x leveraged version of QQQ. There are caveats to holding or trading TQQQ past intraday speculation, but I am going with this ticker to magnify returns. It's fun to see big numbers. Black swans can also be catastrophic. The timeframe will be daily bars since yfinance will be able to get the most amount of data points with daily bars in addition to the exposure with disparate market regimes (bull, chop, and bear).
+                </p>
+
+                <h2>The Code</h2>
+
+                <p>
+                    Below is the code for the strategy described above written for the backtesting.py framework.
+                </p>
+
+                <div class="blog-code-block">
+                    <code>class SMAMomentumStrategy(Strategy):
+    """
+    SMA Crossover + Green Bar Momentum Strategy
+
+    Parameters:
+    - fast_sma: Period for fast moving average
+    - slow_sma: Period for slow moving average
+    - green_bar_threshold: Number of green bars required for momentum confirmation
+    """
+
+    # Strategy parameters
+    fast_sma = 10
+    slow_sma = 30
+    green_bar_threshold = 3
+
+    def init(self):
+        # Calculate SMAs
+        self.sma_fast = self.I(lambda x: pd.Series(x).rolling(self.fast_sma).mean(), self.data.Close)
+        self.sma_slow = self.I(lambda x: pd.Series(x).rolling(self.slow_sma).mean(), self.data.Close)
+
+        # Calculate green bar indicator (Close > Open)
+        self.green_bars = self.I(self._count_green_bars, self.data.Close, self.data.Open)
+
+    def _count_green_bars(self, close, open_):
+        """Count consecutive green bars (close > open)"""
+        green = (close > open_).astype(int)
+
+        # Count consecutive green bars
+        counts = np.zeros(len(green))
+        count = 0
+        for i in range(len(green)):
+            if green[i] == 1:
+                count += 1
+            else:
+                count = 0
+            counts[i] = count
+
+        return counts
+
+    def next(self):
+        # Skip if we don't have enough data
+        if len(self.data) < self.slow_sma:
+            return
+
+        # Check for SMA crossover
+        sma_bullish = crossover(self.sma_fast, self.sma_slow)
+        sma_bearish = crossover(self.sma_slow, self.sma_fast)
+
+        # Check momentum condition (green bar count)
+        momentum_confirmed = self.green_bars[-1] >= self.green_bar_threshold
+
+        # Current trend state
+        uptrend = self.sma_fast[-1] > self.sma_slow[-1]
+
+        # Entry logic
+        if not self.position:
+            # Enter when SMA crosses bullish AND momentum is confirmed
+            if sma_bullish and momentum_confirmed:
+                self.buy()
+            # Alternative: Enter on uptrend with fresh momentum confirmation
+            elif uptrend and momentum_confirmed and self.green_bars[-2] < self.green_bar_threshold:
+                self.buy()
+
+        # Exit logic
+        else:
+            # Exit on bearish crossover
+            if sma_bearish:
+                self.position.close()</code>
+                </div>
+
+                <p>
+                    I will cover testing and basic optimization in the next blog. Stay tuned!
+                </p>
+
+                <!-- Resources Section -->
+                <div class="blog-resources">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><strong>yfinance:</strong> <a href="https://pypi.org/project/yfinance/" target="_blank">yfinance · PyPI</a></li>
+                        <li><strong>Simple Moving Averages Crossovers:</strong> <a href="https://www.schwab.com/learn/story/simple-moving-average-crossovers" target="_blank">Simple Moving Average Crossovers | Charles Schwab</a></li>
+                        <li><strong>TQQQ:</strong> <a href="https://www.proshares.com/our-etfs/leveraged-and-inverse/tqqq" target="_blank">TQQQ | UltraPro QQQ | ProShares</a></li>
+                    </ul>
+                </div>
+
+                <!-- Post Navigation -->
+                <div class="blog-post-nav">
+                    <a href="blog-algotrading-pt1.html">← Previous: Introduction (Pt. 1)</a>
+                    <span></span>
+                </div>
+
+            </div>
+
+            <!-- Blog Post Footer -->
+            <footer class="blog-post-footer">
+                <nav class="blog-nav-bottom">
+                    <a href="blog.html" class="back-to-blog">← Back to All Posts</a>
+                </nav>
+            </footer>
+
+        </article>
+
+        <!-- Blog Quote -->
+		<blockquote class="blog-quote">
+			<p>"In investing, what is comfortable is rarely profitable."
+				― Robert Arnott</p>
+		</blockquote>
+
+    </main>
+
+  </body>
+
+</html>
