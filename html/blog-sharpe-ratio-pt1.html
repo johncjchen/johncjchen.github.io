@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BF5VLX150F"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-BF5VLX150F');
+    </script>
+    <meta charset="UTF-8" />
+	<link rel="icon" href="../images/Palm.jpg" type="image/x-icon">
+    <link href="../style.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trading Metrics: On the Sharpe Ratio (Pt. 1) - John's Blog</title>
+    <style>
+        .blog-resources {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .blog-resources h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 0, 0.9);
+        }
+
+        .blog-resources ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .blog-resources li {
+            margin-bottom: 0.75rem;
+        }
+
+        .blog-resources a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .blog-resources a:hover {
+            color: red;
+            text-decoration: underline;
+        }
+
+        .blog-tbc {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: rgba(255, 255, 0, 0.9);
+            text-align: center;
+            margin: 2rem 0;
+            font-family: elevon, sans-serif;
+        }
+
+        .blog-comments {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .blog-comments h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-family: elevon, sans-serif;
+        }
+    </style>
+  </head>
+  <body id="backb">
+
+    <main>
+
+		<nav-bar>
+			<ul>
+				<li><a href="../index.html">Home</a></li>
+    			<li><a href="about.html">About Me</a></li>
+    			<li><a href="portfolio.html">Portfolio</a></li>
+				<li><a href="resume.html">Resume</a></li>
+    			<li><a class="active" href="blog.html">Blog</a></li>
+    			<li class="nav-right"><a href="https://jadecomet.com">Jade Comet</a></li>
+			</ul>
+		</nav-bar>
+
+        <!-- Blog Post Full Content -->
+        <article class="blog-post-full">
+
+            <!-- Back Navigation -->
+            <nav class="blog-nav">
+                <a href="blog.html" class="back-to-blog">← Back to Blog</a>
+            </nav>
+
+            <!-- Blog Post Header -->
+            <header class="blog-post-header-full">
+                <h1>Trading Metrics: On the Sharpe Ratio (Pt. 1)</h1>
+                <div class="blog-post-meta">
+                    <span class="blog-post-date">November 18, 2025</span>
+                    <span class="blog-post-category">Finance & Trading</span>
+                    <span class="blog-post-reading-time">• 4 min read</span>
+                </div>
+            </header>
+
+            <!-- Blog Post Content -->
+            <div class="blog-post-content-full">
+
+                <p class="blog-post-lead">
+                    What really is the best metric for algorithmic trading performance?
+                </p>
+
+                <p>
+                    Many (including industry) would say the Sharpe ratio is the best measure of a strategy's risk-adjusted performance. The metric, in essence, compares the strategy's relative performance to a risk-free rate while accounting for the variability in those returns. This variability is defined as the standard deviation of the strategy's excess returns.
+                </p>
+
+                <p>
+                    I won't go into too much of the details, much of which can just be read up on in the Investopedia article, but it should be noted that the variables for total return and return variability are not defined over the whole period but rather the incremental segments that compose the period. Please read the Investopedia article if you are still confused.
+                </p>
+
+                <p>
+                    Basically, the ratio best defines risk-adjusted returns for the series of incremental time intervals which compose the backtest duration. A bigger number is better!
+                </p>
+
+                <h2>Limitations of the Sharpe Ratio</h2>
+
+                <p>
+                    One issue is the assumption that a strategy's risk/volatility follows a normal distribution as calculated by the standard deviation of return variability, the ratio's denominator. Tail risk, or black swan events, are not fully represented by the ratio.
+                </p>
+
+                <p>
+                    The potential illusion of a strategy with a high Sharpe ratio is aptly described by Investopedia as "picking up nickels in front of a steamroller". Consistently picking up those nickels will raise the ratio value, but one sporadic move by the steamroller can blow the strategy out of the water while barely influencing the ratio due its rarity.
+                </p>
+
+                <p>
+                    Another concern is the length of the return measurement intervals, wherein longer intervals lowers volatility estimates. Monthly intervals are the standard and should be used whenever available. Otherwise, it is important to note the interval used for the Sharpe ratio calculation and to not take the ratio at face value.
+                </p>
+
+                <h2>Alternative Metrics</h2>
+
+                <p>
+                    The Sharpe ratio is amazing at what it does, but I personally am slightly averse to its bidirectional focus on volatility. I'll take any upside I can! There actually is a variation of the Sharpe ratio I slightly prefer more called the Sortino ratio which only accounts for the downside risk. To me, downside deviation is the most important measure of risk for strategies I develop for algorithmic trading.
+                </p>
+
+                <p>
+                    Another metric for risk-adjusted returns is the Calmar ratio, which simply compares the average annual returns to the maximum drawdown (usually over a three year period). This is only a limited view of risk due to the lack of consideration for volatility, but the Calmar ratio can be a simple metric for those looking to just evaluate maximum downside risk.
+                </p>
+
+                <h2>What Metrics Actually Matter?</h2>
+
+                <p>
+                    Okay, but what metrics are actually important? What should I be maximizing for? I'll talk more about the pros and cons in future articles, but the answer may be disappointing...
+                </p>
+
+                <p class="blog-tbc">TBC</p>
+
+                <!-- Resources Section -->
+                <div class="blog-resources">
+                    <h3>Resources</h3>
+                    <ul>
+                        <li><strong>Sharpe Ratio:</strong> <a href="https://www.investopedia.com/terms/s/sharperatio.asp" target="_blank">Sharpe Ratio: Definition, Formula, and Examples</a></li>
+                        <li><strong>Sortino Ratio:</strong> <a href="https://www.investopedia.com/terms/s/sortinoratio.asp" target="_blank">Sortino Ratio: Definition, Formula, Calculation, and Example</a></li>
+                        <li><strong>Calmar Ratio:</strong> <a href="https://www.investopedia.com/terms/c/calmarratio.asp" target="_blank">Understanding the Calmar Ratio: Risk-Adjusted Returns for Hedge Funds</a></li>
+                    </ul>
+                </div>
+
+                <!-- Comments Section -->
+                <div class="blog-comments">
+                    <h3>Comments</h3>
+                    <script src="https://giscus.app/client.js"
+                            data-repo="johncjchen/johncjchen.github.io"
+                            data-repo-id="R_kgDOHDmFeA"
+                            data-category="Blog Comments"
+                            data-category-id="DIC_kwDOHDmFeM4Cx8Lc"
+                            data-mapping="pathname"
+                            data-strict="0"
+                            data-reactions-enabled="1"
+                            data-emit-metadata="0"
+                            data-input-position="top"
+                            data-theme="transparent_dark"
+                            data-lang="en"
+                            data-loading="lazy"
+                            crossorigin="anonymous"
+                            async>
+                    </script>
+                </div>
+
+            </div>
+
+            <!-- Blog Post Footer -->
+            <footer class="blog-post-footer">
+                <nav class="blog-nav-bottom">
+                    <a href="blog.html" class="back-to-blog">← Back to All Posts</a>
+                </nav>
+            </footer>
+
+        </article>
+
+        <!-- Blog Quote -->
+		<blockquote class="blog-quote">
+			<p>"Risk comes from not knowing what you're doing."
+				― Warren Buffett</p>
+		</blockquote>
+
+    </main>
+
+  </body>
+
+</html>
