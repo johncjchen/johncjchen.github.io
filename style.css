@@ -20,12 +20,11 @@ canvas {
 main {
   width: 100vw;
   color: white;
-  z-index: 99;
-  position: absolute;
+  position: relative;
   width: 100%;
   margin: 0px auto;
   padding: 120px 0px;
-  
+
   display: grid;
   grid-template-columns: repeat(12, 1fr);
 }
@@ -255,16 +254,23 @@ nav-bar {
 }
 */
 
+/* TODO: Fix z-index issue - blog cards and portfolio images appear above navbar on hover */
+nav-bar {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+}
+
 nav-bar ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
   background-color: black;
-  position: fixed;
-  top: 0;
   width: 100%;
-  opacity: 100%;
   font-family: elevon, sans-serif;
   font-weight: 700;
   font-style: normal;
