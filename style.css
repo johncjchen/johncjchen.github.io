@@ -180,6 +180,49 @@ header h1:hover {
 	grid-template-columns: 1fr 1fr;
 }
 
+/* Responsive design for portfolio page */
+@media screen and (max-width: 768px) {
+	.two-column-wrapper {
+		grid-template-columns: 1fr !important;
+	}
+
+	#projects {
+		grid-column: 1 / -1 !important;
+		padding: 1rem;
+		margin: 0;
+		width: 100vw;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	.pdf-container {
+		width: 100% !important;
+		padding: 0 1rem;
+		box-sizing: border-box;
+	}
+
+	.pdf-container iframe {
+		width: 100% !important;
+	}
+
+	.project-pictures img {
+		width: 100%;
+		height: auto;
+	}
+
+	section {
+		width: 100%;
+		box-sizing: border-box;
+	}
+}
+
+@media screen and (max-width: 480px) {
+	.project-description,
+	.project-pictures {
+		padding: 1rem;
+	}
+}
+
 .profile-image img {
 	max-width: 100%;
 }
@@ -338,7 +381,7 @@ body {
 }
 
 #resume {
-  grid-column: 4 / span 6;
+  grid-column: 3 / span 8;
   background: none;
   padding: 0;
 }
