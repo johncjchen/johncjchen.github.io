@@ -338,7 +338,9 @@ body {
 }
 
 #resume {
-  grid-column: 2 / span 10;
+  grid-column: 4 / span 6;
+  background: none;
+  padding: 0;
 }
 
 #backb {

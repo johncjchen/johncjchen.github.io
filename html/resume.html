@@ -14,21 +14,41 @@
     <link href="../style.css" rel="stylesheet" type="text/css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>John's Resume</title>
-    <!--
     <style>
-        .pdf-container {
-            display: flex;
-            justify-content: center; /* Horizontally center */
-            align-items: center; /* Vertically center (optional) */
-            min-height: 100vh; /* Full viewport height */
+        #resume {
+            padding: 0 1rem;
         }
-        iframe {
-            max-width: 80%; /* Adjust width as needed */
-            height: 600px; /* Adjust height as needed */
-            border: none; /* Remove border */
+
+        #resume iframe {
+            width: 900px;
+            height: 1000px;
+            max-width: 100%;
+        }
+
+        @media screen and (max-width: 768px) {
+            #resume {
+                grid-column: 1 / span 12 !important;
+                padding: 0 1rem;
+            }
+
+            #resume iframe {
+                width: 100%;
+                height: 800px;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            #resume {
+                grid-column: 1 / span 12 !important;
+                padding: 0 0.5rem;
+            }
+
+            #resume iframe {
+                width: 100%;
+                height: 600px;
+            }
         }
     </style>
-   -->
   </head>
   <body id ="back">
 
@@ -50,18 +70,12 @@
             <h2>🚧 PAGE UNDER CONSTRUCTION 🚧</h2>
         </section>
 		-->
-  <iframe src="/PDFs/John_Chen_Resume.pdf" width="900" height="1000" frameborder="0"></iframe>
-  <!--
-  <section id="resume">
-   <div class="one-column-wrapper">
-    <iframe src="/John_Chen_Resume.pdf"></iframe>
-   </div>
-   <a href="/John_Chen_Resume.pdf" download>Download my resume</a>
+  <section id="resume" style="margin-bottom: 40px;">
+    <iframe src="/PDFs/John_Chen_Resume.pdf" frameborder="0" style="display: block; margin: 0 auto;"></iframe>
   </section>
- -->
-  <blockquote></blockquote>
+
 		<blockquote>
-			<p>“I must not fear. Fear is the mind-killer. Fear is the little-death that brings total obliteration. I will face my fear. I will permit it to pass over me and through me. And when it has gone past I will turn the inner eye to see its path. Where the fear has gone there will be nothing. Only I will remain.”
+			<p>"I must not fear. Fear is the mind-killer. Fear is the little-death that brings total obliteration. I will face my fear. I will permit it to pass over me and through me. And when it has gone past I will turn the inner eye to see its path. Where the fear has gone there will be nothing. Only I will remain."
 				― Frank Herbert, Dune</p>
 		</blockquote>
       
