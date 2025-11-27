@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BF5VLX150F"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-BF5VLX150F');
+    </script>
+    <meta charset="UTF-8" />
+	<link rel="icon" href="../../../images/Palm.jpg" type="image/x-icon">
+    <link href="../../../style.css" rel="stylesheet" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>On Statistics: Variance and Standard Deviation - John's Blog</title>
+    <style>
+        .blog-resources {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .blog-resources h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: rgba(255, 255, 0, 0.9);
+        }
+
+        .blog-resources ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .blog-resources li {
+            margin-bottom: 0.75rem;
+        }
+
+        .blog-resources a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .blog-resources a:hover {
+            color: red;
+            text-decoration: underline;
+        }
+
+        .blog-comments {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .blog-comments h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-family: elevon, sans-serif;
+        }
+    </style>
+  </head>
+  <body id="backb">
+
+    <main>
+
+		<nav-bar>
+			<ul>
+				<li><a href="../../../index.html">Home</a></li>
+    			<li><a href="../../about.html">About Me</a></li>
+    			<li><a href="../../portfolio.html">Portfolio</a></li>
+				<li><a href="../../resume.html">Resume</a></li>
+    			<li><a class="active" href="../../blog.html">Blog</a></li>
+    			<li class="nav-right"><a href="https://jadecomet.com">Jade Comet</a></li>
+			</ul>
+		</nav-bar>
+
+        <!-- Blog Post Full Content -->
+        <article class="blog-post-full">
+
+            <!-- Back Navigation -->
+            <nav class="blog-nav">
+                <a href="../../blog.html" class="back-to-blog">← Back to Blog</a>
+            </nav>
+
+            <!-- Blog Post Header -->
+            <header class="blog-post-header-full">
+                <h1>On Statistics: Variance and Standard Deviation</h1>
+                <div class="blog-post-meta">
+                    <span class="blog-post-date">November 26, 2025</span>
+                    <span class="blog-post-category">Statistics</span>
+                    <span class="blog-post-reading-time">• 5 min read</span>
+                </div>
+            </header>
+
+            <!-- Blog Post Content -->
+            <div class="blog-post-content-full">
+
+                <p class="blog-post-lead">
+                    Perhaps the most important concept in statistics is that of variance and standard deviation.
+                </p>
+
+                <p>
+                    In essence, they measure how spread out data is. Are the data points clustered or spread out? This simple characteristic provides critical insights into the nature of the data and helps us, scientists and engineers, interpret the validity and uncertainty of our methods.
+                </p>
+
+                <p>
+                    Variance, or σ², is the average squared distance from the mean. The square ensures a positive number while heavily penalizing outliers. Standard deviation, or σ, is the squared root of variance. The square root brings the variance back to units of the original measurement, providing an understanding of the "typical" distance from the mean.
+                </p>
+
+                <p>
+                    The squared nature of variance lends itself to mathematical-oriented use cases, such as optimization, regression, and loss functions. It is great for machine learning, model fitting, and quality control since larger errors are punished disproportionately.
+                </p>
+
+                <h2>The Power of Standard Deviation</h2>
+
+                <p>
+                    If the data can be assumed to follow a normal distribution or bell curve, that is when standard deviation becomes especially powerful. Observing the 68-95-99.7 rule allows us to relatively confidently state that 68% of data points fall within ±1 standard deviation, and so on. Notably, nearly ~100% of the data will fall within just ±3 of these "typical distances" from the mean!
+                </p>
+
+                <h2>Standard Deviation in Investing</h2>
+
+                <p>
+                    In investing or algotrading, the standard deviation (SD) can tell us a lot about the volatility or risk of an algorithm, asset, or portfolio. A high SD would indicate that the asset swings a lot, while a low SD would indicate a more stable asset. SD, in this case, represents the returns over a given time period. For example, the SD of a portfolio's monthly/yearly return is essential in understanding its volatility and certainty about returns. Looking over the complete duration, the portfolio may have exemplary overall returns, yet its equity curve could still give you a fright!
+                </p>
+
+                <h2>Standard Deviation in Engineering</h2>
+
+                <p>
+                    In much the same way, engineers and manufacturers look towards standard deviation as a descriptor of consistency and precision. Low SDs indicate tight tolerances while higher SDs indicate inconsistent part dimensions or characteristics, leading to more rejects. Many times, GD&T calls for a certain level of tolerance, so randomly selected parts may be subjected to measurement by a coordinate-measuring machine (CMM) to measure specified points on the part. The SD of these measurements can tell us how capable or acceptable the process/supplier is at meeting the desired GD&T specifications.
+                </p>
+
+                <h2>Caveats and Limitations</h2>
+
+                <p>
+                    Some caveats include the relationship between the mean and the standard deviation as well as the lack of emphasis on tail risk. When the mean is small relative to the SD, the mean is almost meaningless since large swings dominate the space in either direction. The system is noisy and potentially nondeterministic. When the SD is small relative to the mean, the system is stable and predictable.
+                </p>
+
+                <p>
+                    In finance, SD can understate the potential for extreme losses as a product of seemingly low and unlikely tail risks, which, in the real world, is actually much higher than what a Gaussian model may account for.
+                </p>
+
+                <p>
+                    Essentially, markets may exhibit skewness and fat tails in their return distribution, while the normal distribution standard deviations rely on assume thin tails (negligible probability of events outside three SDs).
+                </p>
+
+                <h2>Conclusion</h2>
+
+                <p>
+                    Variance and standard deviation are the essential building blocks of statistics that are necessary for understanding distribution of data. Simply underrated. I will yap more about these blocks in the future.
+                </p>
+
+                <!-- Comments Section -->
+                <div class="blog-comments">
+                    <h3>Comments</h3>
+                    <script src="https://giscus.app/client.js"
+                            data-repo="johncjchen/johncjchen.github.io"
+                            data-repo-id="R_kgDOHDmFeA"
+                            data-category="Blog Comments"
+                            data-category-id="DIC_kwDOHDmFeM4Cx8Lc"
+                            data-mapping="pathname"
+                            data-strict="0"
+                            data-reactions-enabled="1"
+                            data-emit-metadata="0"
+                            data-input-position="top"
+                            data-theme="transparent_dark"
+                            data-lang="en"
+                            data-loading="lazy"
+                            crossorigin="anonymous"
+                            async>
+                    </script>
+                </div>
+
+            </div>
+
+            <!-- Blog Post Footer -->
+            <footer class="blog-post-footer">
+                <nav class="blog-nav-bottom">
+                    <a href="../../blog.html" class="back-to-blog">← Back to All Posts</a>
+                </nav>
+            </footer>
+
+        </article>
+
+        <!-- Blog Quote -->
+		<blockquote class="blog-quote">
+			<p>"The only statistics you can trust are those you falsified yourself."
+				― Winston Churchill</p>
+		</blockquote>
+
+    </main>
+
+  </body>
+
+</html>
