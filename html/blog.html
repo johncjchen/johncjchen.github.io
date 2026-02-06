@@ -10,90 +10,105 @@
       gtag('config', 'G-BF5VLX150F');
     </script>
     <meta charset="UTF-8" />
-				<link rel="icon" href="/images/Palm.jpg" type="image/x-icon">
+    <link rel="icon" href="/images/Palm.jpg" type="image/x-icon">
     <link href="../style.css" rel="stylesheet" type="text/css" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>John's Blog</title>
+    <meta name="description" content="Blog posts by John Chen on engineering, manufacturing technology, and career insights.">
+    <meta name="author" content="John Chen">
+    <meta property="og:title" content="Blog | John Chen">
+    <meta property="og:description" content="Thoughts on engineering, manufacturing, and the journey from UCSB to industry.">
+    <title>Blog | John Chen</title>
+    <style>
+      .blog-post {
+        background: rgba(255,255,255,0.05);
+        padding: 30px;
+        margin: 20px 0;
+        border-radius: 8px;
+        border-left: 4px solid #4a90a4;
+      }
+      .blog-post h2 {
+        margin-top: 0;
+        color: #4a90a4;
+      }
+      .blog-meta {
+        color: #888;
+        font-size: 0.9em;
+        margin-bottom: 15px;
+      }
+      .blog-post p {
+        line-height: 1.7;
+      }
+      .blog-post h3 {
+        margin-top: 25px;
+        color: #ddd;
+      }
+      .blog-post ul {
+        margin-left: 20px;
+      }
+    </style>
   </head>
-  <body id ="backb">
+  <body id="backb">
 
     <main>
 
 		<nav-bar>
 			<ul>
-				<li><a href = "/index.html">Home</a></li>
-    			<li><a href = "/html/about.html">About Me</a></li>
-    			<li><a href = "/html/portfolio.html">Portfolio</a></li>
-				<!--<li><a href = "/html/projects.html">Projects</a></li>-->
-				<li><a href = "/html/resume.html">Resume</a></li>
-    			<li><a class = "active" href = "/html/blog.html">Blog</a></li>
-    			<li class="nav-right"><a href = "https://jadecomet.com">Jade Comet</a></li>
-				<li><a href = "/html/blogtest.html"></a></li>
+				<li><a href="/index.html">Home</a></li>
+    			<li><a href="/html/about.html">About Me</a></li>
+    			<li><a href="/html/portfolio.html">Portfolio</a></li>
+				<li><a href="/html/resume.html">Resume</a></li>
+    			<li><a class="active" href="/html/blog.html">Blog</a></li>
+    			<li class="nav-right"><a href="https://jadecomet.com">Jade Comet</a></li>
 			</ul>
 		</nav-bar>
 
-        <section>
-            <h2>🚧 PAGE UNDER CONSTRUCTION 🚧</h2>
-        </section>
+    <section>
+      <h1>Blog</h1>
+      <p>Thoughts on engineering, manufacturing, and the journey from school to industry.</p>
+    </section>
 
-        <section>
+    <article class="blog-post">
+      <h2>18 Months at Karl Storz: What I Learned</h2>
+      <div class="blog-meta">February 2026</div>
+      
+      <p>From June 2023 to December 2024, I had the opportunity to work as an Advanced Manufacturing Technology Intern at Karl Storz Imaging in Santa Barbara. Here's what I learned.</p>
 
-        </section>
-        <div class="content-wrapper">
-			<!--<div class="three-row-wrapper">-->
+      <h3>The Project: Automating Hospital Testing</h3>
+      <p>Medical devices like endoscopes go through brutal cleaning cycles in hospitals—acids, bases, high-pressure steam. We needed to test how product coatings hold up after hundreds of cycles. The manual process took months per prototype. My job? Automate it.</p>
 
-				<div class="two-column-wrapper">
-					<div class="project-pictures">
-						<img src="John Chen.JPG">
-					</div>
+      <h3>What I Built</h3>
+      <p>The reprocessing system I integrated combined three subsystems:</p>
+      <ul>
+        <li><strong>Cleaning chamber</strong> — chemical wash</li>
+        <li><strong>Disinfection chamber</strong> — different chemicals</li>
+        <li><strong>Sterilization chamber</strong> — autoclave simulation</li>
+      </ul>
+      <p>I programmed a Raspberry Pi and Arduino MEGA to control the entire process, allowing engineers to run overnight tests that would've taken weeks of manual work.</p>
 
-					<div class="project-description">
-						<h1></h1>
+      <h3>Key Lessons</h3>
+      
+      <p><strong>1. Design of Experiments (DOE) is Powerful</strong><br>
+      I ran a central composite design to study how temperature, time, and chemical concentration affected coating degradation. This statistical approach saved months of trial-and-error.</p>
 
-						<p></p>
-					</div>
-				</div>
+      <p><strong>2. Integration is Harder Than Building</strong><br>
+      The individual components existed. Making them work <em>together</em> reliably? That's where 80% of the engineering effort went.</p>
 
-				<div class="two-column-wrapper">
-					<div class="project-pictures">
-						<img src="John Chen.JPG">
-					</div>
+      <p><strong>3. Document Everything</strong><br>
+      When you're building something that others will maintain, your documentation is as important as your code. I learned to write docs as I built, not after.</p>
 
-					<div class="project-description">
-						<h1></h1>
-
-						<p></p>
-					</div>
-				</div>
-
-				<div class="two-column-wrapper">
-					<div class="profile-image">
-						<img src="John Chen.JPG">
-					</div>
-	
-					
-				</div>
-
-				
-			<!--</div>-->
-		</div>
+      <h3>What's Next</h3>
+      <p>I'm now looking for full-time roles where I can apply these skills in manufacturing, automation, or product development. If you're working on interesting hardware problems, <a href="https://www.linkedin.com/in/johncjchen/">let's connect</a>.</p>
+    </article>
 
 		<blockquote>
-			<p>“Paths are made by walking.”
-				― Franz Kafka</p>
+			<p>"Paths are made by walking." — Franz Kafka</p>
 		</blockquote>
-      
-
-    
 
     </main>
-    
+
+    <script>
+      customElements.define('nav-bar', class extends HTMLElement {});
+    </script>
 
   </body>
-  
 </html>
-
-
-
-<!--------------------------->
-
