@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulations - John Chen</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="icon" href="/images/Palm.jpg" type="image/x-icon">
+  <style>
+    :root {
+      --bg-dark: #1a1a2e;
+      --accent: #4a9eff;
+    }
+    .sim-description {
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background-color: rgba(74, 158, 255, 0.1);
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+    .sim-description code {
+      background: var(--bg-dark);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      color: var(--accent);
+    }
+    .trail-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .trail-toggle input {
+      accent-color: var(--accent);
+      width: 18px;
+      height: 18px;
+    }
+  </style>
+</head>
+<body id="back">
+  <main>
+    <nav-bar>
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/html/about.html">About Me</a></li>
+        <li><a href="/html/portfolio.html">Portfolio</a></li>
+        <li><a href="/html/projects.html">Projects</a></li>
+        <li><a class="active" href="/html/simulations.html">Simulations</a></li>
+        <li><a href="/html/resume.html">Resume</a></li>
+        <li><a href="/html/blog.html">Blog</a></li>
+        <li class="nav-right"><a href="https://jadecomet.com">Jade Comet</a></li>
+      </ul>
+    </nav-bar>
+
+  <section>
+    <h1>Interactive Simulations</h1>
+    <p>Explore physics and engineering concepts through these interactive demos. Play with the parameters and see how systems behave!</p>
+  </section>
+
+  <!-- DOUBLE PENDULUM -->
+  <section class="section-dark">
+    <h2>🌀 Double Pendulum</h2>
+    <div class="simulation-container">
+      <div class="sim-description">
+        A classic example of chaotic motion. Two pendulums connected end-to-end exhibit highly sensitive behavior — tiny changes in initial conditions lead to wildly different trajectories. <strong>Click the canvas to reset with a new random position!</strong>
+      </div>
+      <canvas id="pendulumCanvas" class="simulation-canvas" width="600" height="400"></canvas>
+      <div class="controls">
+        <div class="control-group">
+          <label>Length 1 (m)</label>
+          <input type="range" id="pendL1" min="50" max="150" value="100">
+          <span class="value" id="pendL1Val">1.0</span>
+        </div>
+        <div class="control-group">
+          <label>Length 2 (m)</label>
+          <input type="range" id="pendL2" min="50" max="150" value="100">
+          <span class="value" id="pendL2Val">1.0</span>
+        </div>
+        <div class="control-group">
+          <label>Mass 1 (kg)</label>
+          <input type="range" id="pendM1" min="5" max="30" value="15">
+          <span class="value" id="pendM1Val">15</span>
+        </div>
+        <div class="control-group">
+          <label>Mass 2 (kg)</label>
+          <input type="range" id="pendM2" min="5" max="30" value="15">
+          <span class="value" id="pendM2Val">15</span>
+        </div>
+        <div class="control-group trail-toggle">
+          <input type="checkbox" id="pendTrail" checked>
+          <label>Show Trail</label>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-secondary" id="pendReset">Reset</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPRING-MASS-DAMPER -->
+  <section>
+    <h2>🔩 Spring-Mass-Damper System</h2>
+    <div class="simulation-container">
+      <div class="sim-description">
+        The foundation of mechanical vibrations! Adjust spring constant <code>k</code>, damping coefficient <code>c</code>, and mass <code>m</code> to see underdamped, critically damped, and overdamped responses. <strong>Click the mass and drag to displace it!</strong>
+      </div>
+      <canvas id="springCanvas" class="simulation-canvas" width="600" height="300"></canvas>
+      <div class="controls">
+        <div class="control-group">
+          <label>Spring Constant k (N/m)</label>
+          <input type="range" id="springK" min="10" max="200" value="80">
+          <span class="value" id="springKVal">80</span>
+        </div>
+        <div class="control-group">
+          <label>Damping c (N·s/m)</label>
+          <input type="range" id="springC" min="0" max="50" value="5">
+          <span class="value" id="springCVal">5</span>
+        </div>
+        <div class="control-group">
+          <label>Mass m (kg)</label>
+          <input type="range" id="springM" min="1" max="20" value="5">
+          <span class="value" id="springMVal">5</span>
+        </div>
+        <div class="control-group">
+          <label>Damping Ratio ζ</label>
+          <span class="value" id="springZeta">—</span>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-secondary" id="springReset">Reset</button>
+          <button class="btn" id="springPush">Push!</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTILE MOTION -->
+  <section class="section-dark">
+    <h2>🎯 Projectile Motion</h2>
+    <div class="simulation-container">
+      <div class="sim-description">
+        Classic kinematics with optional air drag! Compare ideal parabolic motion vs. realistic trajectories with drag. Adjust launch angle and velocity to maximize range. <strong>Click "Launch" to fire!</strong>
+      </div>
+      <canvas id="projectileCanvas" class="simulation-canvas" width="600" height="350"></canvas>
+      <div class="controls">
+        <div class="control-group">
+          <label>Launch Angle (°)</label>
+          <input type="range" id="projAngle" min="5" max="85" value="45">
+          <span class="value" id="projAngleVal">45°</span>
+        </div>
+        <div class="control-group">
+          <label>Initial Velocity (m/s)</label>
+          <input type="range" id="projVel" min="10" max="80" value="40">
+          <span class="value" id="projVelVal">40</span>
+        </div>
+        <div class="control-group">
+          <label>Drag Coefficient</label>
+          <input type="range" id="projDrag" min="0" max="100" value="20">
+          <span class="value" id="projDragVal">0.020</span>
+        </div>
+        <div class="control-group trail-toggle">
+          <input type="checkbox" id="projShowIdeal" checked>
+          <label>Show Ideal (no drag)</label>
+        </div>
+        <div class="btn-group">
+          <button class="btn" id="projLaunch">Launch!</button>
+          <button class="btn btn-secondary" id="projReset">Clear</button>
+        </div>
+      </div>
+      <div class="controls" style="margin-top: 0.5rem;">
+        <div class="control-group">
+          <label>Range (drag):</label>
+          <span class="value" id="projRange">—</span>
+        </div>
+        <div class="control-group">
+          <label>Max Height:</label>
+          <span class="value" id="projHeight">—</span>
+        </div>
+        <div class="control-group">
+          <label>Flight Time:</label>
+          <span class="value" id="projTime">—</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <blockquote>
+      "To understand the universe, you must understand the language in which it is written — mathematics and physics."
+      <cite>— Galileo Galilei (paraphrased)</cite>
+    </blockquote>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 John Chen. Built with curiosity and caffeine.</p>
+  </footer>
+
+  <script>
+    // ========================================
+    // DOUBLE PENDULUM SIMULATION
+    // ========================================
+    (function() {
+      const canvas = document.getElementById('pendulumCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      // State
+      let L1 = 100, L2 = 100, m1 = 15, m2 = 15;
+      let a1, a2, a1_v = 0, a2_v = 0;
+      const g = 1;
+      let trail = [];
+      let showTrail = true;
+      
+      // Initialize angles
+      function init() {
+        a1 = Math.PI / 2 + (Math.random() - 0.5) * 0.5;
+        a2 = Math.PI / 2 + (Math.random() - 0.5) * 0.5;
+        a1_v = 0;
+        a2_v = 0;
+        trail = [];
+      }
+      init();
+      
+      // Controls
+      const sliderL1 = document.getElementById('pendL1');
+      const sliderL2 = document.getElementById('pendL2');
+      const sliderM1 = document.getElementById('pendM1');
+      const sliderM2 = document.getElementById('pendM2');
+      const trailCheck = document.getElementById('pendTrail');
+      
+      sliderL1.oninput = () => { L1 = +sliderL1.value; document.getElementById('pendL1Val').textContent = (L1/100).toFixed(1); };
+      sliderL2.oninput = () => { L2 = +sliderL2.value; document.getElementById('pendL2Val').textContent = (L2/100).toFixed(1); };
+      sliderM1.oninput = () => { m1 = +sliderM1.value; document.getElementById('pendM1Val').textContent = m1; };
+      sliderM2.oninput = () => { m2 = +sliderM2.value; document.getElementById('pendM2Val').textContent = m2; };
+      trailCheck.onchange = () => { showTrail = trailCheck.checked; if (!showTrail) trail = []; };
+      
+      document.getElementById('pendReset').onclick = init;
+      canvas.onclick = init;
+      
+      function update() {
+        // Double pendulum equations of motion (Lagrangian mechanics)
+        const num1 = -g * (2 * m1 + m2) * Math.sin(a1);
+        const num2 = -m2 * g * Math.sin(a1 - 2 * a2);
+        const num3 = -2 * Math.sin(a1 - a2) * m2;
+        const num4 = a2_v * a2_v * L2 + a1_v * a1_v * L1 * Math.cos(a1 - a2);
+        const den = L1 * (2 * m1 + m2 - m2 * Math.cos(2 * a1 - 2 * a2));
+        const a1_a = (num1 + num2 + num3 * num4) / den;
+        
+        const num5 = 2 * Math.sin(a1 - a2);
+        const num6 = a1_v * a1_v * L1 * (m1 + m2);
+        const num7 = g * (m1 + m2) * Math.cos(a1);
+        const num8 = a2_v * a2_v * L2 * m2 * Math.cos(a1 - a2);
+        const den2 = L2 * (2 * m1 + m2 - m2 * Math.cos(2 * a1 - 2 * a2));
+        const a2_a = (num5 * (num6 + num7 + num8)) / den2;
+        
+        a1_v += a1_a;
+        a2_v += a2_a;
+        a1 += a1_v;
+        a2 += a2_v;
+        
+        // Damping
+        a1_v *= 0.9999;
+        a2_v *= 0.9999;
+      }
+      
+      function draw() {
+        ctx.fillStyle = '#0d0d15';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        const cx = canvas.width / 2;
+        const cy = 80;
+        
+        const x1 = cx + L1 * Math.sin(a1);
+        const y1 = cy + L1 * Math.cos(a1);
+        const x2 = x1 + L2 * Math.sin(a2);
+        const y2 = y1 + L2 * Math.cos(a2);
+        
+        // Trail
+        if (showTrail) {
+          trail.push({x: x2, y: y2});
+          if (trail.length > 500) trail.shift();
+          
+          ctx.beginPath();
+          for (let i = 0; i < trail.length; i++) {
+            const alpha = i / trail.length;
+            ctx.strokeStyle = `rgba(74, 158, 255, ${alpha * 0.8})`;
+            if (i === 0) {
+              ctx.moveTo(trail[i].x, trail[i].y);
+            } else {
+              ctx.lineTo(trail[i].x, trail[i].y);
+            }
+          }
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+        
+        // Pivot
+        ctx.fillStyle = '#666';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Rods
+        ctx.strokeStyle = '#888';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        
+        // Mass 1
+        ctx.fillStyle = '#ff6b6b';
+        ctx.beginPath();
+        ctx.arc(x1, y1, Math.sqrt(m1) * 2 + 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ff8787';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // Mass 2
+        ctx.fillStyle = '#4ecdc4';
+        ctx.beginPath();
+        ctx.arc(x2, y2, Math.sqrt(m2) * 2 + 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#7eddd7';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      
+      function animate() {
+        for (let i = 0; i < 2; i++) update();
+        draw();
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    // ========================================
+    // SPRING-MASS-DAMPER SIMULATION
+    // ========================================
+    (function() {
+      const canvas = document.getElementById('springCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      let k = 80, c = 5, m = 5;
+      let x = 0, v = 0;
+      const equilibrium = 350;
+      let isDragging = false;
+      let history = [];
+      
+      // Controls
+      const sliderK = document.getElementById('springK');
+      const sliderC = document.getElementById('springC');
+      const sliderM = document.getElementById('springM');
+      
+      function updateZeta() {
+        const zeta = c / (2 * Math.sqrt(k * m));
+        const zetaEl = document.getElementById('springZeta');
+        if (zeta < 1) {
+          zetaEl.textContent = zeta.toFixed(3) + ' (underdamped)';
+          zetaEl.style.color = '#4ecdc4';
+        } else if (zeta === 1) {
+          zetaEl.textContent = zeta.toFixed(3) + ' (critical)';
+          zetaEl.style.color = '#ffd93d';
+        } else {
+          zetaEl.textContent = zeta.toFixed(3) + ' (overdamped)';
+          zetaEl.style.color = '#ff6b6b';
+        }
+      }
+      
+      sliderK.oninput = () => { k = +sliderK.value; document.getElementById('springKVal').textContent = k; updateZeta(); };
+      sliderC.oninput = () => { c = +sliderC.value; document.getElementById('springCVal').textContent = c; updateZeta(); };
+      sliderM.oninput = () => { m = +sliderM.value; document.getElementById('springMVal').textContent = m; updateZeta(); };
+      updateZeta();
+      
+      document.getElementById('springReset').onclick = () => { x = 0; v = 0; history = []; };
+      document.getElementById('springPush').onclick = () => { v = 15; };
+      
+      // Drag interaction
+      canvas.onmousedown = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const massX = equilibrium + x * 2;
+        const massY = 150;
+        if (Math.abs(mx - massX) < 40 && Math.abs(my - massY) < 40) {
+          isDragging = true;
+        }
+      };
+      
+      canvas.onmousemove = (e) => {
+        if (isDragging) {
+          const rect = canvas.getBoundingClientRect();
+          const mx = e.clientX - rect.left;
+          x = (mx - equilibrium) / 2;
+          x = Math.max(-100, Math.min(100, x));
+          v = 0;
+        }
+      };
+      
+      canvas.onmouseup = () => { isDragging = false; };
+      canvas.onmouseleave = () => { isDragging = false; };
+      
+      function update() {
+        if (isDragging) return;
+        
+        const dt = 0.05;
+        const F = -k * x - c * v;
+        const a = F / m;
+        v += a * dt;
+        x += v * dt;
+        
+        history.push(x);
+        if (history.length > 200) history.shift();
+      }
+      
+      function drawSpring(x1, y1, x2, y2, coils) {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        const amplitude = 15;
+        const segments = coils * 4;
+        
+        for (let i = 1; i <= segments; i++) {
+          const t = i / segments;
+          const px = x1 + dx * t;
+          const offset = amplitude * Math.sin(t * coils * Math.PI * 2);
+          const py = y1 + dy * t + offset;
+          ctx.lineTo(px, py);
+        }
+        
+        ctx.strokeStyle = '#4a9eff';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
+      
+      function draw() {
+        ctx.fillStyle = '#0d0d15';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        const massX = equilibrium + x * 2;
+        const massY = 150;
+        
+        // Wall
+        ctx.fillStyle = '#444';
+        ctx.fillRect(40, 100, 20, 100);
+        for (let i = 0; i < 5; i++) {
+          ctx.beginPath();
+          ctx.moveTo(40, 100 + i * 20);
+          ctx.lineTo(25, 115 + i * 20);
+          ctx.strokeStyle = '#444';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+        
+        // Spring
+        drawSpring(60, massY, massX - 35, massY, 12);
+        
+        // Mass
+        ctx.fillStyle = '#ff6b6b';
+        ctx.fillRect(massX - 35, massY - 30, 70, 60);
+        ctx.strokeStyle = '#ff8787';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(massX - 35, massY - 30, 70, 60);
+        
+        // Label on mass
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 16px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('m', massX, massY + 6);
+        
+        // Damper (simplified)
+        ctx.strokeStyle = '#666';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(60, massY + 45);
+        ctx.lineTo(massX - 35, massY + 45);
+        ctx.stroke();
+        ctx.fillStyle = '#555';
+        ctx.fillRect(massX - 80, massY + 35, 30, 20);
+        
+        // Ground
+        ctx.strokeStyle = '#444';
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(equilibrium, 20);
+        ctx.lineTo(equilibrium, 280);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        // History graph
+        ctx.strokeStyle = '#4a9eff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let i = 0; i < history.length; i++) {
+          const gx = 400 + i;
+          const gy = 150 - history[i] * 1.5;
+          if (i === 0) ctx.moveTo(gx, gy);
+          else ctx.lineTo(gx, gy);
+        }
+        ctx.stroke();
+        
+        // Graph border
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(400, 70, 200, 160);
+        ctx.fillStyle = '#a0a0b0';
+        ctx.font = '12px sans-serif';
+        ctx.fillText('Position vs Time', 500, 65);
+      }
+      
+      function animate() {
+        update();
+        draw();
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    // ========================================
+    // PROJECTILE MOTION SIMULATION
+    // ========================================
+    (function() {
+      const canvas = document.getElementById('projectileCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      let angle = 45, velocity = 40, drag = 0.02;
+      let showIdeal = true;
+      let projectiles = [];
+      let isAnimating = false;
+      
+      const groundY = 300;
+      const startX = 50;
+      const scale = 3;
+      
+      // Controls
+      const sliderAngle = document.getElementById('projAngle');
+      const sliderVel = document.getElementById('projVel');
+      const sliderDrag = document.getElementById('projDrag');
+      const checkIdeal = document.getElementById('projShowIdeal');
+      
+      sliderAngle.oninput = () => { angle = +sliderAngle.value; document.getElementById('projAngleVal').textContent = angle + '°'; drawStatic(); };
+      sliderVel.oninput = () => { velocity = +sliderVel.value; document.getElementById('projVelVal').textContent = velocity; drawStatic(); };
+      sliderDrag.oninput = () => { drag = +sliderDrag.value / 1000; document.getElementById('projDragVal').textContent = drag.toFixed(3); };
+      checkIdeal.onchange = () => { showIdeal = checkIdeal.checked; };
+      
+      document.getElementById('projReset').onclick = () => {
+        projectiles = [];
+        isAnimating = false;
+        document.getElementById('projRange').textContent = '—';
+        document.getElementById('projHeight').textContent = '—';
+        document.getElementById('projTime').textContent = '—';
+        drawStatic();
+      };
+      
+      document.getElementById('projLaunch').onclick = launch;
+      
+      function launch() {
+        const rad = angle * Math.PI / 180;
+        const vx = velocity * Math.cos(rad);
+        const vy = -velocity * Math.sin(rad);
+        
+        projectiles.push({
+          x: startX, y: groundY,
+          vx: vx, vy: vy,
+          trail: [],
+          idealTrail: [],
+          drag: drag,
+          maxHeight: 0,
+          range: 0,
+          time: 0,
+          done: false,
+          showIdeal: showIdeal
+        });
+        
+        // Pre-calculate ideal trajectory
+        if (showIdeal) {
+          const p = projectiles[projectiles.length - 1];
+          let ix = startX, iy = groundY;
+          let ivx = vx, ivy = vy;
+          const g = 9.8;
+          const dt = 0.02;
+          
+          while (iy <= groundY + 5 || ivy < 0) {
+            p.idealTrail.push({x: ix, y: iy});
+            ix += ivx * scale * dt;
+            ivy += g * dt;
+            iy += ivy * scale * dt;
+            if (iy > groundY) break;
+          }
+        }
+        
+        if (!isAnimating) {
+          isAnimating = true;
+          animate();
+        }
+      }
+      
+      function update() {
+        const g = 9.8;
+        const dt = 0.02;
+        
+        for (const p of projectiles) {
+          if (p.done) continue;
+          
+          // With drag: F_drag = -c * v * |v|
+          const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+          const dragX = -p.drag * p.vx * speed;
+          const dragY = -p.drag * p.vy * speed;
+          
+          p.vx += dragX * dt;
+          p.vy += (g + dragY) * dt;
+          
+          p.x += p.vx * scale * dt;
+          p.y += p.vy * scale * dt;
+          p.time += dt;
+          
+          p.trail.push({x: p.x, y: p.y});
+          
+          const height = (groundY - p.y) / scale;
+          if (height > p.maxHeight) p.maxHeight = height;
+          
+          if (p.y >= groundY) {
+            p.done = true;
+            p.range = (p.x - startX) / scale;
+            
+            // Update display for last projectile
+            document.getElementById('projRange').textContent = p.range.toFixed(1) + ' m';
+            document.getElementById('projHeight').textContent = p.maxHeight.toFixed(1) + ' m';
+            document.getElementById('projTime').textContent = p.time.toFixed(2) + ' s';
+          }
+        }
+        
+        // Check if all done
+        if (projectiles.every(p => p.done)) {
+          isAnimating = false;
+        }
+      }
+      
+      function drawStatic() {
+        ctx.fillStyle = '#0d0d15';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Ground
+        ctx.fillStyle = '#2a2a3a';
+        ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
+        
+        // Grid
+        ctx.strokeStyle = '#1a1a25';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < canvas.width; x += 50) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, groundY);
+          ctx.stroke();
+        }
+        for (let y = 0; y < groundY; y += 50) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(canvas.width, y);
+          ctx.stroke();
+        }
+        
+        // Launcher
+        const rad = angle * Math.PI / 180;
+        ctx.save();
+        ctx.translate(startX, groundY);
+        ctx.rotate(-rad);
+        ctx.fillStyle = '#4a9eff';
+        ctx.fillRect(-5, -8, 40, 16);
+        ctx.restore();
+        
+        // Angle arc
+        ctx.strokeStyle = '#666';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(startX, groundY, 30, -rad, 0);
+        ctx.stroke();
+        
+        // Velocity preview arrow
+        ctx.strokeStyle = 'rgba(74, 158, 255, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(startX, groundY);
+        ctx.lineTo(startX + velocity * Math.cos(rad) * 2, groundY - velocity * Math.sin(rad) * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      
+      function draw() {
+        drawStatic();
+        
+        for (const p of projectiles) {
+          // Ideal trajectory (dashed, green)
+          if (p.showIdeal && p.idealTrail.length > 1) {
+            ctx.strokeStyle = '#4ecdc4';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(p.idealTrail[0].x, p.idealTrail[0].y);
+            for (const pt of p.idealTrail) {
+              ctx.lineTo(pt.x, pt.y);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+          }
+          
+          // Actual trajectory
+          if (p.trail.length > 1) {
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(p.trail[0].x, p.trail[0].y);
+            for (const pt of p.trail) {
+              ctx.lineTo(pt.x, pt.y);
+            }
+            ctx.stroke();
+          }
+          
+          // Projectile
+          if (!p.done) {
+            ctx.fillStyle = '#ff6b6b';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ff8787';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          }
+        }
+        
+        // Legend
+        ctx.fillStyle = '#a0a0b0';
+        ctx.font = '12px sans-serif';
+        ctx.fillText('Red: with drag', 500, 20);
+        ctx.fillText('Teal: ideal (no drag)', 500, 35);
+      }
+      
+      function animate() {
+        if (!isAnimating) return;
+        update();
+        draw();
+        requestAnimationFrame(animate);
+      }
+      
+      drawStatic();
+    })();
+  </script>
+
+  </main>
+</body>
+</html>
