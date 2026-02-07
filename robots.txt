@@ -1,0 +1,5 @@
+# robots.txt for johncjchen.github.io
+User-agent: *
+Allow: /
+
+Sitemap: https://johncjchen.github.io/sitemap.xml
