@@ -1,0 +1,4216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulations - John Chen</title>
+  <link rel="stylesheet" href="../style.css">
+  <!-- MathJax for equation rendering -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link rel="icon" href="/images/Palm.jpg" type="image/x-icon">
+  <style>
+    :root {
+      --bg-dark: #1a1a2e;
+      --accent: #4a9eff;
+    }
+    
+    /* Override global canvas positioning for simulations */
+    .simulation-canvas,
+    #pendulumCanvas, #springCanvas, #projectileCanvas,
+    #pw-canvas, #nb-canvas, #cs-canvas,
+    #lorenz-canvas, #fourier-canvas, #ik-canvas,
+    #beam-canvas, #pid-canvas, #gear-canvas, #heat-canvas,
+    .simulation-container canvas,
+    section canvas {
+      position: relative !important;
+      top: auto !important;
+      left: auto !important;
+      display: block;
+      margin: 0 auto 1rem auto;
+      border-radius: 8px;
+      max-width: 100%;
+    }
+    
+    .simulation-canvas {
+      border: 2px solid #333;
+      background: #0d0d15;
+      cursor: pointer;
+    }
+    
+    .simulation-container {
+      background: rgba(20, 20, 35, 0.9);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .sim-description {
+      margin-bottom: 1rem;
+      padding: 0.75rem;
+      background-color: rgba(74, 158, 255, 0.1);
+      border-radius: 6px;
+      font-size: 0.95rem;
+    }
+    .sim-description code {
+      background: var(--bg-dark);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      color: var(--accent);
+    }
+    
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem;
+      background: rgba(30, 30, 50, 0.8);
+      border-radius: 8px;
+    }
+    
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      min-width: 120px;
+    }
+    
+    .control-group label {
+      font-size: 0.8rem;
+      color: #a0a0b0;
+    }
+    
+    .control-group input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+    
+    .control-group .value {
+      font-size: 0.9rem;
+      color: #fff;
+      font-weight: bold;
+    }
+    
+    .trail-toggle {
+      display: flex;
+      flex-direction: row !important;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .trail-toggle input {
+      accent-color: var(--accent);
+      width: 18px;
+      height: 18px;
+    }
+    .trail-toggle label {
+      color: #fff;
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      background: var(--accent);
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: #3a8eef;
+    }
+    
+    .btn-secondary {
+      background: #444;
+    }
+    .btn-secondary:hover {
+      background: #555;
+    }
+    
+    /* Make sections wider for simulations */
+    section.section-dark {
+      background: rgba(15, 15, 25, 0.95);
+    }
+    
+    /* Override grid constraints for simulation sections */
+    section.simulation-container,
+    #pendulum-wave, #nbody-gravity, #collision-sandbox,
+    #lorenz-attractor, #fourier-series, #ik-arm,
+    #beam-deflection-sim, #pid-controller-sim, #gear-train-sim, #heat-conduction-sim {
+      grid-column: 2 / 12 !important;
+      max-width: 700px;
+    }
+    
+    /* Ensure main allows full width */
+    main section {
+      margin-bottom: 2rem;
+    }
+    
+    /* Theory/Equations Panel Styles */
+    .theory-panel {
+      margin-top: 1rem;
+      border: 1px solid #3a3a5a;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    
+    .theory-toggle {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: linear-gradient(135deg, #2a2a4a 0%, #1a1a3a 100%);
+      border: none;
+      color: #4a9eff;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background 0.2s;
+    }
+    
+    .theory-toggle:hover {
+      background: linear-gradient(135deg, #3a3a5a 0%, #2a2a4a 100%);
+    }
+    
+    .theory-toggle::after {
+      content: '▼';
+      font-size: 0.8rem;
+      transition: transform 0.3s;
+    }
+    
+    .theory-toggle.active::after {
+      transform: rotate(180deg);
+    }
+    
+    .theory-content {
+      display: none;
+      padding: 1rem;
+      background: rgba(15, 15, 30, 0.95);
+    }
+    
+    .theory-content.show {
+      display: block;
+    }
+    
+    .equation-box {
+      background: #0d0d1a;
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 0.75rem 0;
+      border-left: 3px solid #4a9eff;
+      overflow-x: auto;
+    }
+    
+    .equation-box .MathJax {
+      font-size: 1.1em !important;
+    }
+    
+    .equation-label {
+      color: #888;
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .live-equation {
+      background: linear-gradient(135deg, #1a2a1a 0%, #0d1a0d 100%);
+      border-left-color: #4ade80;
+    }
+    
+    .live-equation .value {
+      color: #4ade80;
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-weight: bold;
+    }
+    
+    .code-block {
+      background: #0a0a15;
+      padding: 1rem;
+      border-radius: 6px;
+      margin: 0.75rem 0;
+      font-family: 'Monaco', 'Consolas', monospace;
+      font-size: 0.85rem;
+      color: #e0e0e0;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.4;
+    }
+    
+    .code-block .keyword { color: #ff79c6; }
+    .code-block .comment { color: #6272a4; }
+    .code-block .number { color: #bd93f9; }
+    .code-block .function { color: #50fa7b; }
+  </style>
+</head>
+<body id="back">
+  <main>
+    <nav-bar>
+      <ul>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/html/about.html">About Me</a></li>
+        <li><a href="/html/portfolio.html">Portfolio</a></li>
+        <li><a href="/html/projects.html">Projects</a></li>
+        <li><a class="active" href="/html/simulations.html">Simulations 🤖</a></li>
+        <li><a href="/html/resume.html">Resume</a></li>
+        <li><a href="/html/blog.html">Blog</a></li>
+        <li class="nav-right"><a href="https://jadecomet.com">Jade Comet</a></li>
+      </ul>
+    </nav-bar>
+
+  <section>
+    <h1>Interactive Simulations</h1>
+    <p>Explore physics and engineering concepts through these interactive demos. Play with the parameters and see how systems behave!</p>
+    
+    <div style="background: linear-gradient(135deg, #4a9eff22, #9b59b622); border: 1px solid #4a9eff44; border-radius: 8px; padding: 1rem; margin: 1rem 0; display: flex; align-items: center; gap: 1rem;">
+      <span style="font-size: 2rem;">🤖</span>
+      <div>
+        <strong style="color: #4a9eff;">AI-Generated Experiment</strong><br>
+        <span style="font-size: 0.9rem; opacity: 0.9;">This page was created by Claude (AI) as a test of autonomous web development. The physics simulations, visualizations, and code were generated through AI-human collaboration. Pretty cool, right?</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOUBLE PENDULUM -->
+  <section class="section-dark">
+    <h2>🌀 Double Pendulum</h2>
+    <div class="simulation-container">
+      <div class="sim-description">
+        A classic example of chaotic motion. Two pendulums connected end-to-end exhibit highly sensitive behavior — tiny changes in initial conditions lead to wildly different trajectories. <strong>Click the canvas to reset with a new random position!</strong>
+      </div>
+      <canvas id="pendulumCanvas" class="simulation-canvas" width="600" height="400"></canvas>
+      <div class="controls">
+        <div class="control-group">
+          <label>Length 1 (m)</label>
+          <input type="range" id="pendL1" min="50" max="150" value="100">
+          <span class="value" id="pendL1Val">1.0</span>
+        </div>
+        <div class="control-group">
+          <label>Length 2 (m)</label>
+          <input type="range" id="pendL2" min="50" max="150" value="100">
+          <span class="value" id="pendL2Val">1.0</span>
+        </div>
+        <div class="control-group">
+          <label>Mass 1 (kg)</label>
+          <input type="range" id="pendM1" min="5" max="30" value="15">
+          <span class="value" id="pendM1Val">15</span>
+        </div>
+        <div class="control-group">
+          <label>Mass 2 (kg)</label>
+          <input type="range" id="pendM2" min="5" max="30" value="15">
+          <span class="value" id="pendM2Val">15</span>
+        </div>
+        <div class="control-group trail-toggle">
+          <input type="checkbox" id="pendTrail" checked>
+          <label>Show Trail</label>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-secondary" id="pendReset">Reset</button>
+        </div>
+      </div>
+      
+      <!-- Theory Panel -->
+      <div class="theory-panel">
+        <button class="theory-toggle" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+          📐 Physics & Equations
+        </button>
+        <div class="theory-content">
+          <p style="color: #aaa; margin-bottom: 1rem;">The double pendulum is governed by <strong>Lagrangian mechanics</strong>. Despite simple rules, it exhibits chaotic behavior — tiny changes in initial conditions lead to vastly different trajectories.</p>
+          
+          <div class="equation-label">Lagrangian (L = T - V):</div>
+          <div class="equation-box">
+            \[L = \frac{1}{2}(m_1 + m_2)L_1^2\dot{\theta}_1^2 + \frac{1}{2}m_2 L_2^2\dot{\theta}_2^2 + m_2 L_1 L_2 \dot{\theta}_1\dot{\theta}_2\cos(\theta_1 - \theta_2) + (m_1 + m_2)gL_1\cos\theta_1 + m_2 g L_2\cos\theta_2\]
+          </div>
+          
+          <div class="equation-label">Angular Acceleration (θ₁):</div>
+          <div class="equation-box">
+            \[\ddot{\theta}_1 = \frac{-g(2m_1 + m_2)\sin\theta_1 - m_2 g\sin(\theta_1 - 2\theta_2) - 2\sin(\theta_1-\theta_2)m_2(\dot{\theta}_2^2 L_2 + \dot{\theta}_1^2 L_1\cos(\theta_1-\theta_2))}{L_1(2m_1 + m_2 - m_2\cos(2\theta_1 - 2\theta_2))}\]
+          </div>
+          
+          <div class="equation-label">Core Physics Code:</div>
+          <div class="code-block"><span class="comment">// Lagrangian mechanics - equations of motion</span>
+<span class="keyword">const</span> num1 = -g * (2*m1 + m2) * Math.sin(θ1);
+<span class="keyword">const</span> num2 = -m2 * g * Math.sin(θ1 - 2*θ2);
+<span class="keyword">const</span> num3 = -2 * Math.sin(θ1 - θ2) * m2;
+<span class="keyword">const</span> num4 = θ2_vel² * L2 + θ1_vel² * L1 * Math.cos(θ1 - θ2);
+<span class="keyword">const</span> den = L1 * (2*m1 + m2 - m2*Math.cos(2*θ1 - 2*θ2));
+
+θ1_accel = (num1 + num2 + num3*num4) / den;</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPRING-MASS-DAMPER -->
+  <section>
+    <h2>🔩 Spring-Mass-Damper System</h2>
+    <div class="simulation-container">
+      <div class="sim-description">
+        The foundation of mechanical vibrations! Adjust spring constant <code>k</code>, damping coefficient <code>c</code>, and mass <code>m</code> to see underdamped, critically damped, and overdamped responses. <strong>Click the mass and drag to displace it!</strong>
+      </div>
+      <canvas id="springCanvas" class="simulation-canvas" width="600" height="300"></canvas>
+      <div class="controls">
+        <div class="control-group">
+          <label>Spring Constant k (N/m)</label>
+          <input type="range" id="springK" min="10" max="200" value="80">
+          <span class="value" id="springKVal">80</span>
+        </div>
+        <div class="control-group">
+          <label>Damping c (N·s/m)</label>
+          <input type="range" id="springC" min="0" max="50" value="5">
+          <span class="value" id="springCVal">5</span>
+        </div>
+        <div class="control-group">
+          <label>Mass m (kg)</label>
+          <input type="range" id="springM" min="1" max="20" value="5">
+          <span class="value" id="springMVal">5</span>
+        </div>
+        <div class="control-group">
+          <label>Damping Ratio ζ</label>
+          <span class="value" id="springZeta">—</span>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-secondary" id="springReset">Reset</button>
+          <button class="btn" id="springPush">Push!</button>
+        </div>
+      </div>
+      
+      <!-- Theory Panel -->
+      <div class="theory-panel">
+        <button class="theory-toggle" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+          📐 Physics & Equations
+        </button>
+        <div class="theory-content">
+          <p style="color: #aaa; margin-bottom: 1rem;">The <strong>spring-mass-damper</strong> system is fundamental to mechanical vibrations and control systems.</p>
+          
+          <div class="equation-label">Equation of Motion:</div>
+          <div class="equation-box">
+            \[m\ddot{x} + c\dot{x} + kx = F(t)\]
+          </div>
+          
+          <div class="equation-label">Key Parameters:</div>
+          <div class="equation-box">
+            <div>Natural Frequency: \(\omega_n = \sqrt{\frac{k}{m}}\)</div>
+            <div style="margin-top: 0.5rem;">Damping Ratio: \(\zeta = \frac{c}{2\sqrt{km}}\)</div>
+          </div>
+          
+          <div class="equation-label">Response Types:</div>
+          <div class="equation-box" style="border-left-color: #4ecdc4;">
+            <div>\(\zeta < 1\) — <span style="color: #4ecdc4;">Underdamped</span> (oscillates)</div>
+            <div>\(\zeta = 1\) — <span style="color: #ffd93d;">Critically damped</span> (fastest decay)</div>
+            <div>\(\zeta > 1\) — <span style="color: #ff6b6b;">Overdamped</span> (slow return)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTILE MOTION -->
+  <section class="section-dark">
+    <h2>🎯 Projectile Motion</h2>
+    <div class="simulation-container">
+      <div class="sim-description">
+        Classic kinematics with optional air drag! Compare ideal parabolic motion vs. realistic trajectories with drag. Adjust launch angle and velocity to maximize range. <strong>Click "Launch" to fire!</strong>
+      </div>
+      <canvas id="projectileCanvas" class="simulation-canvas" width="600" height="350"></canvas>
+      <div class="controls">
+        <div class="control-group">
+          <label>Launch Angle (°)</label>
+          <input type="range" id="projAngle" min="5" max="85" value="45">
+          <span class="value" id="projAngleVal">45°</span>
+        </div>
+        <div class="control-group">
+          <label>Initial Velocity (m/s)</label>
+          <input type="range" id="projVel" min="10" max="80" value="40">
+          <span class="value" id="projVelVal">40</span>
+        </div>
+        <div class="control-group">
+          <label>Drag Coefficient</label>
+          <input type="range" id="projDrag" min="0" max="100" value="20">
+          <span class="value" id="projDragVal">0.020</span>
+        </div>
+        <div class="control-group trail-toggle">
+          <input type="checkbox" id="projShowIdeal" checked>
+          <label>Show Ideal (no drag)</label>
+        </div>
+        <div class="btn-group">
+          <button class="btn" id="projLaunch">Launch!</button>
+          <button class="btn btn-secondary" id="projReset">Clear</button>
+        </div>
+      </div>
+      <div class="controls" style="margin-top: 0.5rem;">
+        <div class="control-group">
+          <label>Range (drag):</label>
+          <span class="value" id="projRange">—</span>
+        </div>
+        <div class="control-group">
+          <label>Max Height:</label>
+          <span class="value" id="projHeight">—</span>
+        </div>
+        <div class="control-group">
+          <label>Flight Time:</label>
+          <span class="value" id="projTime">—</span>
+        </div>
+      </div>
+      
+      <!-- Theory Panel -->
+      <div class="theory-panel">
+        <button class="theory-toggle" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+          📐 Physics & Equations
+        </button>
+        <div class="theory-content">
+          <p style="color: #aaa; margin-bottom: 1rem;"><strong>Projectile motion</strong> demonstrates kinematics under gravity, with optional air resistance.</p>
+          
+          <div class="equation-label">Ideal Trajectory (no drag):</div>
+          <div class="equation-box">
+            \[x(t) = v_0 \cos(\theta) \cdot t\]
+            \[y(t) = v_0 \sin(\theta) \cdot t - \frac{1}{2}gt^2\]
+          </div>
+          
+          <div class="equation-label">Range (no drag):</div>
+          <div class="equation-box">
+            \[R = \frac{v_0^2 \sin(2\theta)}{g}\]
+            <div style="color: #888; font-size: 0.85rem; margin-top: 0.5rem;">Maximum range at θ = 45°</div>
+          </div>
+          
+          <div class="equation-label">With Air Drag:</div>
+          <div class="equation-box" style="border-left-color: #ff6b6b;">
+            \[\vec{F}_{drag} = -\frac{1}{2}\rho C_d A |\vec{v}|\vec{v}\]
+            <div style="color: #888; font-size: 0.85rem; margin-top: 0.5rem;">Drag reduces range and creates asymmetric trajectory</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================ -->
+  <!-- ADDITIONAL PHYSICS SIMULATIONS -->
+  <!-- ============================================ -->
+<!-- Pendulum Wave Simulation -->
+<section class="simulation-container" id="pendulum-wave">
+  <h2>🎵 Pendulum Wave</h2>
+  <p>Watch mesmerizing wave patterns emerge as pendulums of slightly different lengths sync and desync.</p>
+  
+  <div class="controls">
+    <label>Pendulums: <input type="range" id="pw-count" min="5" max="25" value="15"><span id="pw-count-val">15</span></label>
+    <label>Speed: <input type="range" id="pw-speed" min="0.5" max="3" step="0.1" value="1"><span id="pw-speed-val">1.0x</span></label>
+    <button id="pw-reset">Reset</button>
+  </div>
+  
+  <div class="simulation-canvas" style="position:relative;">
+    <canvas id="pw-canvas" width="600" height="400"></canvas>
+  </div>
+  
+  <!-- Theory Panel -->
+  <div class="theory-panel">
+    <button class="theory-toggle" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+      📐 Physics & Equations
+    </button>
+    <div class="theory-content">
+      <p style="color: #aaa; margin-bottom: 1rem;">The <strong>pendulum wave</strong> creates mesmerizing patterns from pendulums with carefully chosen lengths.</p>
+      
+      <div class="equation-label">Simple Pendulum Period:</div>
+      <div class="equation-box">
+        \[T = 2\pi\sqrt{\frac{L}{g}}\]
+      </div>
+      
+      <div class="equation-label">Wave Pattern Principle:</div>
+      <div class="equation-box" style="border-left-color: #4ecdc4;">
+        <div>Each pendulum has slightly different length \(L_n\)</div>
+        <div style="margin-top: 0.5rem;">Different \(L\) → Different \(T\) → Phase drift over time</div>
+        <div style="margin-top: 0.5rem; color: #888;">After time \(t\), pendulums align then spread in wave patterns</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+#pendulum-wave {
+  background: #1a1a2e;
+  color: #eee;
+  padding: 20px;
+  border-radius: 12px;
+  font-family: system-ui, sans-serif;
+}
+#pendulum-wave h2 { margin-top: 0; color: #fff; }
+#pendulum-wave .controls {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #16213e;
+  border-radius: 8px;
+}
+#pendulum-wave label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+#pendulum-wave input[type="range"] { width: 100px; }
+#pendulum-wave button {
+  padding: 8px 16px;
+  background: #e94560;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+#pendulum-wave button:hover { background: #ff6b6b; }
+#pw-canvas {
+  background: #0f0f23;
+  border-radius: 8px;
+  display: block;
+}
+</style>
+
+<script>
+(function() {
+  const canvas = document.getElementById('pw-canvas');
+  const ctx = canvas.getContext('2d');
+  const countSlider = document.getElementById('pw-count');
+  const speedSlider = document.getElementById('pw-speed');
+  const countVal = document.getElementById('pw-count-val');
+  const speedVal = document.getElementById('pw-speed-val');
+  const resetBtn = document.getElementById('pw-reset');
+  
+  let pendulums = [];
+  let time = 0;
+  let animationId;
+  
+  const pivotY = 50;
+  const g = 9.81;
+  const basePeriod = 60; // Base period in "cycles" for longest pendulum
+  
+  function initPendulums() {
+    const count = parseInt(countSlider.value);
+    pendulums = [];
+    
+    const startX = 50;
+    const endX = canvas.width - 50;
+    const spacing = (endX - startX) / (count - 1);
+    
+    for (let i = 0; i < count; i++) {
+      // Each pendulum completes a different number of oscillations in 60 seconds
+      const oscillations = 51 + i; // 51, 52, 53... oscillations per cycle
+      const length = 80 + (count - 1 - i) * 8; // Decreasing length
+      
+      pendulums.push({
+        x: startX + i * spacing,
+        length: length,
+        frequency: oscillations / basePeriod,
+        angle: Math.PI / 4, // Start angle
+        phase: 0
+      });
+    }
+  }
+  
+  function update(dt) {
+    const speed = parseFloat(speedSlider.value);
+    time += dt * speed;
+  }
+  
+  function draw() {
+    ctx.fillStyle = '#0f0f23';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw support bar
+    ctx.strokeStyle = '#4a4a6a';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.moveTo(30, pivotY);
+    ctx.lineTo(canvas.width - 30, pivotY);
+    ctx.stroke();
+    
+    // Draw pendulums
+    pendulums.forEach((p, i) => {
+      const angle = p.angle * Math.cos(2 * Math.PI * p.frequency * time);
+      const bobX = p.x + p.length * Math.sin(angle);
+      const bobY = pivotY + p.length * Math.cos(angle);
+      
+      // String
+      ctx.strokeStyle = '#666';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(p.x, pivotY);
+      ctx.lineTo(bobX, bobY);
+      ctx.stroke();
+      
+      // Pivot point
+      ctx.fillStyle = '#888';
+      ctx.beginPath();
+      ctx.arc(p.x, pivotY, 4, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Bob with gradient color based on position
+      const hue = (i / pendulums.length) * 280 + 180;
+      const glow = ctx.createRadialGradient(bobX, bobY, 0, bobX, bobY, 20);
+      glow.addColorStop(0, `hsla(${hue}, 80%, 60%, 1)`);
+      glow.addColorStop(1, `hsla(${hue}, 80%, 60%, 0)`);
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(bobX, bobY, 20, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = `hsl(${hue}, 70%, 55%)`;
+      ctx.beginPath();
+      ctx.arc(bobX, bobY, 12, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    
+    // Time display
+    ctx.fillStyle = '#666';
+    ctx.font = '12px monospace';
+    ctx.fillText(`Time: ${time.toFixed(1)}s`, 10, canvas.height - 10);
+  }
+  
+  let lastTime = 0;
+  function animate(timestamp) {
+    const dt = Math.min((timestamp - lastTime) / 1000, 0.1);
+    lastTime = timestamp;
+    
+    update(dt);
+    draw();
+    animationId = requestAnimationFrame(animate);
+  }
+  
+  countSlider.addEventListener('input', () => {
+    countVal.textContent = countSlider.value;
+    initPendulums();
+  });
+  
+  speedSlider.addEventListener('input', () => {
+    speedVal.textContent = parseFloat(speedSlider.value).toFixed(1) + 'x';
+  });
+  
+  resetBtn.addEventListener('click', () => {
+    time = 0;
+    initPendulums();
+  });
+  
+  initPendulums();
+  animate(0);
+})();
+</script>
+
+
+<!-- N-Body Gravity Simulation -->
+<section class="simulation-container" id="nbody-gravity">
+  <h2>🪐 N-Body Gravity</h2>
+  <p>Click to spawn planets with random mass and velocity. Watch gravitational attraction create orbital patterns.</p>
+  
+  <div class="controls">
+    <label>Gravity: <input type="range" id="nb-gravity" min="0.1" max="5" step="0.1" value="1"><span id="nb-gravity-val">1.0</span></label>
+    <label>Trail Length: <input type="range" id="nb-trail" min="0" max="200" step="10" value="100"><span id="nb-trail-val">100</span></label>
+    <button id="nb-clear">Clear All</button>
+    <span id="nb-body-count" style="margin-left: auto; color: #888;">Bodies: 0</span>
+  </div>
+  
+  <div class="simulation-canvas" style="position:relative;">
+    <canvas id="nb-canvas" width="600" height="400"></canvas>
+  </div>
+  
+  <!-- Theory Panel -->
+  <div class="theory-panel">
+    <button class="theory-toggle" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+      📐 Physics & Equations
+    </button>
+    <div class="theory-content">
+      <p style="color: #aaa; margin-bottom: 1rem;">The <strong>N-body problem</strong> simulates gravitational interactions between multiple masses.</p>
+      
+      <div class="equation-label">Newton's Law of Gravitation:</div>
+      <div class="equation-box">
+        \[\vec{F}_{ij} = G\frac{m_i m_j}{|\vec{r}_{ij}|^2}\hat{r}_{ij}\]
+      </div>
+      
+      <div class="equation-label">Acceleration of body i:</div>
+      <div class="equation-box">
+        \[\vec{a}_i = \sum_{j \neq i} G\frac{m_j}{|\vec{r}_{ij}|^2}\hat{r}_{ij}\]
+      </div>
+      
+      <div class="equation-label">Numerical Integration (Euler):</div>
+      <div class="equation-box" style="border-left-color: #888;">
+        \[\vec{v}_{new} = \vec{v} + \vec{a} \cdot \Delta t\]
+        \[\vec{x}_{new} = \vec{x} + \vec{v} \cdot \Delta t\]
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+#nbody-gravity {
+  background: #1a1a2e;
+  color: #eee;
+  padding: 20px;
+  border-radius: 12px;
+  font-family: system-ui, sans-serif;
+}
+#nbody-gravity h2 { margin-top: 0; color: #fff; }
+#nbody-gravity .controls {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #16213e;
+  border-radius: 8px;
+}
+#nbody-gravity label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+#nbody-gravity input[type="range"] { width: 100px; }
+#nbody-gravity button {
+  padding: 8px 16px;
+  background: #e94560;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+#nbody-gravity button:hover { background: #ff6b6b; }
+#nb-canvas {
+  background: #0a0a1a;
+  border-radius: 8px;
+  display: block;
+  cursor: crosshair;
+}
+</style>
+
+<script>
+(function() {
+  const canvas = document.getElementById('nb-canvas');
+  const ctx = canvas.getContext('2d');
+  const gravitySlider = document.getElementById('nb-gravity');
+  const trailSlider = document.getElementById('nb-trail');
+  const gravityVal = document.getElementById('nb-gravity-val');
+  const trailVal = document.getElementById('nb-trail-val');
+  const clearBtn = document.getElementById('nb-clear');
+  const bodyCount = document.getElementById('nb-body-count');
+  
+  let bodies = [];
+  const G = 500; // Gravitational constant (scaled for visuals)
+  const minDist = 20; // Minimum distance to prevent extreme forces
+  
+  class Body {
+    constructor(x, y, vx, vy, mass) {
+      this.x = x;
+      this.y = y;
+      this.vx = vx;
+      this.vy = vy;
+      this.mass = mass;
+      this.radius = Math.sqrt(mass) * 2 + 3;
+      this.trail = [];
+      this.hue = Math.random() * 360;
+    }
+    
+    update(dt, gravityMult, trailLength) {
+      this.x += this.vx * dt;
+      this.y += this.vy * dt;
+      
+      // Store trail
+      this.trail.push({ x: this.x, y: this.y });
+      if (this.trail.length > trailLength) {
+        this.trail.shift();
+      }
+      
+      // Bounce off edges with damping
+      if (this.x < this.radius) { this.x = this.radius; this.vx *= -0.8; }
+      if (this.x > canvas.width - this.radius) { this.x = canvas.width - this.radius; this.vx *= -0.8; }
+      if (this.y < this.radius) { this.y = this.radius; this.vy *= -0.8; }
+      if (this.y > canvas.height - this.radius) { this.y = canvas.height - this.radius; this.vy *= -0.8; }
+    }
+    
+    draw() {
+      // Draw trail
+      if (this.trail.length > 1) {
+        ctx.beginPath();
+        ctx.moveTo(this.trail[0].x, this.trail[0].y);
+        for (let i = 1; i < this.trail.length; i++) {
+          ctx.lineTo(this.trail[i].x, this.trail[i].y);
+        }
+        ctx.strokeStyle = `hsla(${this.hue}, 70%, 50%, 0.4)`;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      
+      // Draw body with glow
+      const glow = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 3);
+      glow.addColorStop(0, `hsla(${this.hue}, 80%, 60%, 0.8)`);
+      glow.addColorStop(1, `hsla(${this.hue}, 80%, 60%, 0)`);
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius * 3, 0, Math.PI * 2);
+      ctx.fill();
+      
+      ctx.fillStyle = `hsl(${this.hue}, 70%, 55%)`;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  
+  function applyGravity(dt, gravityMult) {
+    for (let i = 0; i < bodies.length; i++) {
+      for (let j = i + 1; j < bodies.length; j++) {
+        const b1 = bodies[i];
+        const b2 = bodies[j];
+        
+        const dx = b2.x - b1.x;
+        const dy = b2.y - b1.y;
+        const distSq = Math.max(dx * dx + dy * dy, minDist * minDist);
+        const dist = Math.sqrt(distSq);
+        
+        const force = G * gravityMult * b1.mass * b2.mass / distSq;
+        const fx = force * dx / dist;
+        const fy = force * dy / dist;
+        
+        b1.vx += fx / b1.mass * dt;
+        b1.vy += fy / b1.mass * dt;
+        b2.vx -= fx / b2.mass * dt;
+        b2.vy -= fy / b2.mass * dt;
+      }
+    }
+  }
+  
+  function update(dt) {
+    const gravityMult = parseFloat(gravitySlider.value);
+    const trailLength = parseInt(trailSlider.value);
+    
+    applyGravity(dt, gravityMult);
+    bodies.forEach(b => b.update(dt, gravityMult, trailLength));
+    bodyCount.textContent = `Bodies: ${bodies.length}`;
+  }
+  
+  function draw() {
+    // Fade effect for trails
+    ctx.fillStyle = 'rgba(10, 10, 26, 0.3)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Clear for crisp drawing
+    ctx.fillStyle = '#0a0a1a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    bodies.forEach(b => b.draw());
+    
+    // Instructions
+    if (bodies.length === 0) {
+      ctx.fillStyle = '#555';
+      ctx.font = '16px system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('Click anywhere to spawn planets', canvas.width / 2, canvas.height / 2);
+      ctx.textAlign = 'left';
+    }
+  }
+  
+  let lastTime = 0;
+  function animate(timestamp) {
+    const dt = Math.min((timestamp - lastTime) / 1000, 0.05);
+    lastTime = timestamp;
+    
+    update(dt);
+    draw();
+    requestAnimationFrame(animate);
+  }
+  
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const mass = 5 + Math.random() * 20;
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 20 + Math.random() * 40;
+    const vx = Math.cos(angle) * speed;
+    const vy = Math.sin(angle) * speed;
+    
+    bodies.push(new Body(x, y, vx, vy, mass));
+  });
+  
+  gravitySlider.addEventListener('input', () => {
+    gravityVal.textContent = parseFloat(gravitySlider.value).toFixed(1);
+  });
+  
+  trailSlider.addEventListener('input', () => {
+    trailVal.textContent = trailSlider.value;
+  });
+  
+  clearBtn.addEventListener('click', () => {
+    bodies = [];
+  });
+  
+  animate(0);
+})();
+</script>
+
+
+<!-- Collision Sandbox Simulation -->
+<section class="simulation-container" id="collision-sandbox">
+  <h2>💥 Collision Sandbox</h2>
+  <p>Spawn balls and watch elastic or inelastic collisions. Observe momentum and energy conservation in action.</p>
+  
+  <div class="controls">
+    <label>Elasticity: <input type="range" id="cs-elasticity" min="0" max="1" step="0.05" value="1"><span id="cs-elasticity-val">1.00</span></label>
+    <button id="cs-spawn">Spawn Ball</button>
+    <button id="cs-spawn5">+5 Random</button>
+    <button id="cs-clear">Clear</button>
+  </div>
+  
+  <div class="simulation-canvas" style="position:relative;">
+    <canvas id="cs-canvas" width="600" height="400"></canvas>
+    <div id="cs-stats" style="position:absolute; top:10px; left:10px; font-family: monospace; font-size: 12px; color: #8af; pointer-events:none;"></div>
+  </div>
+  
+  <!-- Theory Panel -->
+  <div class="theory-panel">
+    <button class="theory-toggle" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+      📐 Physics & Equations
+    </button>
+    <div class="theory-content">
+      <p style="color: #aaa; margin-bottom: 1rem;"><strong>Collision physics</strong> demonstrates conservation of momentum and energy transfer.</p>
+      
+      <div class="equation-label">Conservation of Momentum:</div>
+      <div class="equation-box">
+        \[m_1\vec{v}_1 + m_2\vec{v}_2 = m_1\vec{v}_1' + m_2\vec{v}_2'\]
+      </div>
+      
+      <div class="equation-label">Coefficient of Restitution:</div>
+      <div class="equation-box">
+        \[e = \frac{|v_2' - v_1'|}{|v_1 - v_2|}\]
+        <div style="margin-top: 0.5rem; color: #888; font-size: 0.85rem;">
+          \(e = 1\): Perfectly elastic (KE conserved)<br>
+          \(e = 0\): Perfectly inelastic (objects stick)
+        </div>
+      </div>
+      
+      <div class="equation-label">Kinetic Energy:</div>
+      <div class="equation-box" style="border-left-color: #4ecdc4;">
+        \[KE = \frac{1}{2}mv^2\]
+        <div style="color: #888; font-size: 0.85rem; margin-top: 0.5rem;">Only conserved when e = 1</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+#collision-sandbox {
+  background: #1a1a2e;
+  color: #eee;
+  padding: 20px;
+  border-radius: 12px;
+  font-family: system-ui, sans-serif;
+}
+#collision-sandbox h2 { margin-top: 0; color: #fff; }
+#collision-sandbox .controls {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #16213e;
+  border-radius: 8px;
+}
+#collision-sandbox label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+#collision-sandbox input[type="range"] { width: 100px; }
+#collision-sandbox button {
+  padding: 8px 16px;
+  background: #4a90d9;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+#collision-sandbox button:hover { background: #5ba0e9; }
+#collision-sandbox button:last-child { background: #e94560; }
+#collision-sandbox button:last-child:hover { background: #ff6b6b; }
+#cs-canvas {
+  background: #0f0f23;
+  border-radius: 8px;
+  display: block;
+}
+</style>
+
+<script>
+(function() {
+  const canvas = document.getElementById('cs-canvas');
+  const ctx = canvas.getContext('2d');
+  const elasticitySlider = document.getElementById('cs-elasticity');
+  const elasticityVal = document.getElementById('cs-elasticity-val');
+  const spawnBtn = document.getElementById('cs-spawn');
+  const spawn5Btn = document.getElementById('cs-spawn5');
+  const clearBtn = document.getElementById('cs-clear');
+  const statsDiv = document.getElementById('cs-stats');
+  
+  let balls = [];
+  const gravity = 200;
+  const friction = 0.999;
+  
+  class Ball {
+    constructor(x, y, vx, vy, mass) {
+      this.x = x;
+      this.y = y;
+      this.vx = vx;
+      this.vy = vy;
+      this.mass = mass;
+      this.radius = Math.sqrt(mass) * 5 + 8;
+      this.hue = Math.random() * 360;
+    }
+    
+    update(dt) {
+      this.vy += gravity * dt;
+      this.vx *= friction;
+      this.vy *= friction;
+      
+      this.x += this.vx * dt;
+      this.y += this.vy * dt;
+      
+      const elasticity = parseFloat(elasticitySlider.value);
+      
+      // Wall collisions
+      if (this.x < this.radius) {
+        this.x = this.radius;
+        this.vx = -this.vx * elasticity;
+      }
+      if (this.x > canvas.width - this.radius) {
+        this.x = canvas.width - this.radius;
+        this.vx = -this.vx * elasticity;
+      }
+      if (this.y < this.radius) {
+        this.y = this.radius;
+        this.vy = -this.vy * elasticity;
+      }
+      if (this.y > canvas.height - this.radius) {
+        this.y = canvas.height - this.radius;
+        this.vy = -this.vy * elasticity;
+      }
+    }
+    
+    draw() {
+      // Glow
+      const glow = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 2);
+      glow.addColorStop(0, `hsla(${this.hue}, 70%, 55%, 0.6)`);
+      glow.addColorStop(1, `hsla(${this.hue}, 70%, 55%, 0)`);
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius * 2, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Ball
+      const grad = ctx.createRadialGradient(
+        this.x - this.radius * 0.3, this.y - this.radius * 0.3, 0,
+        this.x, this.y, this.radius
+      );
+      grad.addColorStop(0, `hsl(${this.hue}, 70%, 70%)`);
+      grad.addColorStop(1, `hsl(${this.hue}, 60%, 40%)`);
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fill();
+      
+      // Mass label
+      ctx.fillStyle = '#fff';
+      ctx.font = '10px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(this.mass.toFixed(0), this.x, this.y + 3);
+    }
+    
+    kineticEnergy() {
+      return 0.5 * this.mass * (this.vx * this.vx + this.vy * this.vy);
+    }
+    
+    momentum() {
+      return {
+        x: this.mass * this.vx,
+        y: this.mass * this.vy
+      };
+    }
+  }
+  
+  function resolveCollision(b1, b2) {
+    const dx = b2.x - b1.x;
+    const dy = b2.y - b1.y;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    if (dist === 0) return;
+    
+    const overlap = (b1.radius + b2.radius) - dist;
+    if (overlap <= 0) return;
+    
+    const elasticity = parseFloat(elasticitySlider.value);
+    
+    // Separate balls
+    const nx = dx / dist;
+    const ny = dy / dist;
+    const separation = overlap / 2;
+    b1.x -= nx * separation;
+    b1.y -= ny * separation;
+    b2.x += nx * separation;
+    b2.y += ny * separation;
+    
+    // Relative velocity
+    const dvx = b1.vx - b2.vx;
+    const dvy = b1.vy - b2.vy;
+    const dvn = dvx * nx + dvy * ny;
+    
+    // Only resolve if approaching
+    if (dvn > 0) return;
+    
+    // Impulse magnitude with elasticity
+    const restitution = elasticity;
+    const impulse = -(1 + restitution) * dvn / (1/b1.mass + 1/b2.mass);
+    
+    // Apply impulse
+    b1.vx += impulse * nx / b1.mass;
+    b1.vy += impulse * ny / b1.mass;
+    b2.vx -= impulse * nx / b2.mass;
+    b2.vy -= impulse * ny / b2.mass;
+  }
+  
+  function spawnBall() {
+    const x = 50 + Math.random() * (canvas.width - 100);
+    const y = 50 + Math.random() * 100;
+    const vx = (Math.random() - 0.5) * 200;
+    const vy = (Math.random() - 0.5) * 100;
+    const mass = 3 + Math.random() * 12;
+    balls.push(new Ball(x, y, vx, vy, mass));
+  }
+  
+  function update(dt) {
+    balls.forEach(b => b.update(dt));
+    
+    // Check collisions
+    for (let i = 0; i < balls.length; i++) {
+      for (let j = i + 1; j < balls.length; j++) {
+        resolveCollision(balls[i], balls[j]);
+      }
+    }
+    
+    // Update stats
+    let totalKE = 0;
+    let totalPx = 0;
+    let totalPy = 0;
+    
+    balls.forEach(b => {
+      totalKE += b.kineticEnergy();
+      const p = b.momentum();
+      totalPx += p.x;
+      totalPy += p.y;
+    });
+    
+    const totalP = Math.sqrt(totalPx * totalPx + totalPy * totalPy);
+    const elasticity = parseFloat(elasticitySlider.value);
+    const mode = elasticity >= 1 ? 'Elastic' : elasticity > 0 ? 'Partially Elastic' : 'Perfectly Inelastic';
+    
+    statsDiv.innerHTML = `
+      Balls: ${balls.length}<br>
+      Mode: ${mode} (e=${elasticity.toFixed(2)})<br>
+      <span style="color:#8f8">Kinetic Energy: ${totalKE.toFixed(0)} J</span><br>
+      <span style="color:#f88">Momentum: ${totalP.toFixed(0)} kg·m/s</span>
+    `;
+  }
+  
+  function draw() {
+    ctx.fillStyle = '#0f0f23';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Grid
+    ctx.strokeStyle = '#1a1a3a';
+    ctx.lineWidth = 1;
+    for (let x = 0; x < canvas.width; x += 50) {
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, canvas.height);
+      ctx.stroke();
+    }
+    for (let y = 0; y < canvas.height; y += 50) {
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(canvas.width, y);
+      ctx.stroke();
+    }
+    
+    balls.forEach(b => b.draw());
+    
+    if (balls.length === 0) {
+      ctx.fillStyle = '#555';
+      ctx.font = '16px system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText('Click "Spawn Ball" or click canvas to add balls', canvas.width / 2, canvas.height / 2);
+      ctx.textAlign = 'left';
+    }
+  }
+  
+  let lastTime = 0;
+  function animate(timestamp) {
+    const dt = Math.min((timestamp - lastTime) / 1000, 0.05);
+    lastTime = timestamp;
+    
+    update(dt);
+    draw();
+    requestAnimationFrame(animate);
+  }
+  
+  elasticitySlider.addEventListener('input', () => {
+    elasticityVal.textContent = parseFloat(elasticitySlider.value).toFixed(2);
+  });
+  
+  spawnBtn.addEventListener('click', spawnBall);
+  
+  spawn5Btn.addEventListener('click', () => {
+    for (let i = 0; i < 5; i++) spawnBall();
+  });
+  
+  clearBtn.addEventListener('click', () => {
+    balls = [];
+  });
+  
+  // Click on canvas to spawn at position
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const vx = (Math.random() - 0.5) * 100;
+    const vy = (Math.random() - 0.5) * 50;
+    const mass = 3 + Math.random() * 12;
+    balls.push(new Ball(x, y, vx, vy, mass));
+  });
+  
+  animate(0);
+})();
+</script>
+
+
+
+  <!-- ============================================ -->
+  <!-- MATH & VISUALIZATION SIMULATIONS -->
+  <!-- ============================================ -->
+<!-- Lorenz Attractor Simulation -->
+<section class="simulation-container" id="lorenz-attractor">
+  <h2>🦋 Lorenz Attractor</h2>
+  <p>The famous "butterfly effect" - a chaotic system where tiny changes lead to vastly different outcomes. Watch the trajectory trace the strange attractor.</p>
+  
+  <div class="controls">
+    <label>σ (sigma): <input type="range" id="lorenz-sigma" min="5" max="20" step="0.5" value="10"><span id="lorenz-sigma-val">10</span></label>
+    <label>ρ (rho): <input type="range" id="lorenz-rho" min="20" max="35" step="0.5" value="28"><span id="lorenz-rho-val">28</span></label>
+    <label>β (beta): <input type="range" id="lorenz-beta" min="1" max="5" step="0.1" value="2.67"><span id="lorenz-beta-val">2.67</span></label>
+    <label>Rotation: <input type="range" id="lorenz-rotation" min="0" max="360" step="1" value="0"><span id="lorenz-rotation-val">0°</span></label>
+    <button id="lorenz-reset">Reset</button>
+  </div>
+  
+  <div class="simulation-canvas" style="position: relative;">
+    <canvas id="lorenz-canvas" width="600" height="400"></canvas>
+  </div>
+  
+  <!-- Theory Panel -->
+  <div class="theory-panel">
+    <button class="theory-toggle" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+      📐 Physics & Equations
+    </button>
+    <div class="theory-content">
+      <p style="color: #aaa; margin-bottom: 1rem;">The <strong>Lorenz system</strong> is a simplified model of atmospheric convection that exhibits chaotic behavior — the "butterfly effect."</p>
+      
+      <div class="equation-label">Lorenz Equations:</div>
+      <div class="equation-box">
+        \[\frac{dx}{dt} = \sigma(y - x)\]
+        \[\frac{dy}{dt} = x(\rho - z) - y\]
+        \[\frac{dz}{dt} = xy - \beta z\]
+      </div>
+      
+      <div class="equation-label">Classic Parameters:</div>
+      <div class="equation-box" style="border-left-color: #00d4ff;">
+        \[\sigma = 10, \quad \rho = 28, \quad \beta = \frac{8}{3}\]
+        <div style="color: #888; font-size: 0.85rem; margin-top: 0.5rem;">These values produce the famous "butterfly" strange attractor</div>
+      </div>
+      
+      <div class="equation-label">Chaos Property:</div>
+      <div class="equation-box" style="border-left-color: #ff6b6b;">
+        <div>Sensitive dependence on initial conditions</div>
+        <div style="color: #888; font-size: 0.85rem; margin-top: 0.5rem;">Tiny changes → dramatically different trajectories</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #lorenz-attractor {
+    background: #1a1a2e;
+    padding: 20px;
+    border-radius: 10px;
+    color: #eee;
+    font-family: 'Segoe UI', sans-serif;
+    max-width: 660px;
+  }
+  #lorenz-attractor h2 {
+    margin-top: 0;
+    color: #00d4ff;
+  }
+  #lorenz-attractor .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #252540;
+    border-radius: 8px;
+  }
+  #lorenz-attractor .controls label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+  #lorenz-attractor .controls input[type="range"] {
+    width: 100px;
+    accent-color: #00d4ff;
+  }
+  #lorenz-attractor .controls span {
+    min-width: 40px;
+    color: #00d4ff;
+  }
+  #lorenz-attractor .controls button {
+    background: #00d4ff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  #lorenz-attractor .controls button:hover {
+    background: #00a8cc;
+  }
+  #lorenz-attractor canvas {
+    background: #0d0d1a;
+    border-radius: 8px;
+    display: block;
+  }
+</style>
+
+<script>
+(function() {
+  const canvas = document.getElementById('lorenz-canvas');
+  const ctx = canvas.getContext('2d');
+  
+  // Lorenz parameters
+  let sigma = 10, rho = 28, beta = 2.667;
+  let rotation = 0;
+  
+  // State
+  let x = 0.1, y = 0, z = 0;
+  const dt = 0.005;
+  const trail = [];
+  const maxTrail = 8000;
+  
+  // Controls
+  const sigmaSlider = document.getElementById('lorenz-sigma');
+  const rhoSlider = document.getElementById('lorenz-rho');
+  const betaSlider = document.getElementById('lorenz-beta');
+  const rotationSlider = document.getElementById('lorenz-rotation');
+  const resetBtn = document.getElementById('lorenz-reset');
+  
+  sigmaSlider.oninput = () => {
+    sigma = parseFloat(sigmaSlider.value);
+    document.getElementById('lorenz-sigma-val').textContent = sigma;
+  };
+  rhoSlider.oninput = () => {
+    rho = parseFloat(rhoSlider.value);
+    document.getElementById('lorenz-rho-val').textContent = rho;
+  };
+  betaSlider.oninput = () => {
+    beta = parseFloat(betaSlider.value);
+    document.getElementById('lorenz-beta-val').textContent = beta.toFixed(2);
+  };
+  rotationSlider.oninput = () => {
+    rotation = parseFloat(rotationSlider.value) * Math.PI / 180;
+    document.getElementById('lorenz-rotation-val').textContent = rotationSlider.value + '°';
+  };
+  
+  resetBtn.onclick = () => {
+    x = 0.1; y = 0; z = 0;
+    trail.length = 0;
+  };
+  
+  function step() {
+    // Lorenz equations
+    const dx = sigma * (y - x);
+    const dy = x * (rho - z) - y;
+    const dz = x * y - beta * z;
+    
+    x += dx * dt;
+    y += dy * dt;
+    z += dz * dt;
+    
+    trail.push({ x, y, z });
+    if (trail.length > maxTrail) trail.shift();
+  }
+  
+  function project(px, py, pz) {
+    // Rotate around Y axis
+    const cosR = Math.cos(rotation);
+    const sinR = Math.sin(rotation);
+    const rx = px * cosR - pz * sinR;
+    const rz = px * sinR + pz * cosR;
+    
+    // Project to 2D (XZ plane after rotation)
+    const scale = 8;
+    const screenX = canvas.width / 2 + rx * scale;
+    const screenY = canvas.height / 2 + (pz - 25) * scale * -0.5 + py * scale * -0.3;
+    return { x: screenX, y: screenY };
+  }
+  
+  function draw() {
+    ctx.fillStyle = 'rgba(13, 13, 26, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    if (trail.length < 2) return;
+    
+    ctx.beginPath();
+    const start = project(trail[0].x, trail[0].y, trail[0].z);
+    ctx.moveTo(start.x, start.y);
+    
+    for (let i = 1; i < trail.length; i++) {
+      const p = project(trail[i].x, trail[i].y, trail[i].z);
+      ctx.lineTo(p.x, p.y);
+    }
+    
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    gradient.addColorStop(0, '#00d4ff');
+    gradient.addColorStop(0.5, '#ff00aa');
+    gradient.addColorStop(1, '#ffaa00');
+    
+    ctx.strokeStyle = gradient;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Draw current point
+    const curr = project(x, y, z);
+    ctx.beginPath();
+    ctx.arc(curr.x, curr.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+  }
+  
+  function animate() {
+    for (let i = 0; i < 5; i++) step();
+    draw();
+    requestAnimationFrame(animate);
+  }
+  
+  // Initial clear
+  ctx.fillStyle = '#0d0d1a';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  animate();
+})();
+</script>
+
+
+<!-- Fourier Series Simulation -->
+<section class="simulation-container" id="fourier-series">
+  <h2>🎵 Fourier Series</h2>
+  <p>See how complex waveforms are built from simple sine waves. The spinning circles (epicycles) trace out the wave on the right.</p>
+  
+  <div class="controls">
+    <label>Terms: <input type="range" id="fourier-terms" min="1" max="20" step="1" value="5"><span id="fourier-terms-val">5</span></label>
+    <label>Wave Type:
+      <select id="fourier-wave">
+        <option value="square">Square</option>
+        <option value="sawtooth">Sawtooth</option>
+        <option value="triangle">Triangle</option>
+      </select>
+    </label>
+    <label>Speed: <input type="range" id="fourier-speed" min="0.5" max="3" step="0.1" value="1"><span id="fourier-speed-val">1x</span></label>
+  </div>
+  
+  <div class="simulation-canvas" style="position: relative;">
+    <canvas id="fourier-canvas" width="600" height="400"></canvas>
+  </div>
+  
+  <!-- Theory Panel -->
+  <div class="theory-panel">
+    <button class="theory-toggle" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+      📐 Physics & Equations
+    </button>
+    <div class="theory-content">
+      <p style="color: #aaa; margin-bottom: 1rem;"><strong>Fourier series</strong> decompose periodic functions into sums of sines and cosines — the basis of signal processing.</p>
+      
+      <div class="equation-label">General Form:</div>
+      <div class="equation-box">
+        \[f(x) = \frac{a_0}{2} + \sum_{n=1}^{\infty} \left( a_n \cos(nx) + b_n \sin(nx) \right)\]
+      </div>
+      
+      <div class="equation-label">Square Wave:</div>
+      <div class="equation-box" style="border-left-color: #ff6b9d;">
+        \[f(x) = \frac{4}{\pi} \sum_{n=1,3,5,...}^{\infty} \frac{\sin(nx)}{n}\]
+      </div>
+      
+      <div class="equation-label">Sawtooth Wave:</div>
+      <div class="equation-box" style="border-left-color: #6b9dff;">
+        \[f(x) = \frac{2}{\pi} \sum_{n=1}^{\infty} \frac{(-1)^{n+1} \sin(nx)}{n}\]
+      </div>
+      
+      <div class="equation-label">Epicycles:</div>
+      <div class="equation-box" style="border-left-color: #888;">
+        <div>Each term = rotating circle (epicycle)</div>
+        <div style="color: #888; font-size: 0.85rem; margin-top: 0.5rem;">Radius = amplitude, rotation speed = frequency</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #fourier-series {
+    background: #1a1a2e;
+    padding: 20px;
+    border-radius: 10px;
+    color: #eee;
+    font-family: 'Segoe UI', sans-serif;
+    max-width: 660px;
+  }
+  #fourier-series h2 {
+    margin-top: 0;
+    color: #ff6b9d;
+  }
+  #fourier-series .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #252540;
+    border-radius: 8px;
+    align-items: center;
+  }
+  #fourier-series .controls label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+  #fourier-series .controls input[type="range"] {
+    width: 100px;
+    accent-color: #ff6b9d;
+  }
+  #fourier-series .controls select {
+    background: #1a1a2e;
+    color: #eee;
+    border: 1px solid #ff6b9d;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  #fourier-series .controls span {
+    min-width: 30px;
+    color: #ff6b9d;
+  }
+  #fourier-series canvas {
+    background: #0d0d1a;
+    border-radius: 8px;
+    display: block;
+  }
+</style>
+
+<script>
+(function() {
+  const canvas = document.getElementById('fourier-canvas');
+  const ctx = canvas.getContext('2d');
+  
+  let numTerms = 5;
+  let waveType = 'square';
+  let speed = 1;
+  let time = 0;
+  const wave = [];
+  const maxWave = 400;
+  
+  // Controls
+  const termsSlider = document.getElementById('fourier-terms');
+  const waveSelect = document.getElementById('fourier-wave');
+  const speedSlider = document.getElementById('fourier-speed');
+  
+  termsSlider.oninput = () => {
+    numTerms = parseInt(termsSlider.value);
+    document.getElementById('fourier-terms-val').textContent = numTerms;
+    wave.length = 0;
+  };
+  waveSelect.onchange = () => {
+    waveType = waveSelect.value;
+    wave.length = 0;
+  };
+  speedSlider.oninput = () => {
+    speed = parseFloat(speedSlider.value);
+    document.getElementById('fourier-speed-val').textContent = speed.toFixed(1) + 'x';
+  };
+  
+  function getCoefficients(n, type) {
+    // Returns { amplitude, frequency } for term n (1-indexed)
+    if (type === 'square') {
+      // Square wave: only odd harmonics, 4/(nπ) amplitude
+      const k = 2 * n - 1; // 1, 3, 5, 7...
+      return { amp: 4 / (k * Math.PI), freq: k };
+    } else if (type === 'sawtooth') {
+      // Sawtooth: all harmonics, 2/(nπ) * (-1)^(n+1)
+      const sign = (n % 2 === 1) ? 1 : -1;
+      return { amp: 2 / (n * Math.PI) * sign, freq: n };
+    } else if (type === 'triangle') {
+      // Triangle: only odd harmonics, 8/(n²π²) * (-1)^((n-1)/2)
+      const k = 2 * n - 1;
+      const sign = ((n - 1) % 2 === 0) ? 1 : -1;
+      return { amp: 8 / (k * k * Math.PI * Math.PI) * sign, freq: k };
+    }
+    return { amp: 0, freq: 1 };
+  }
+  
+  function draw() {
+    ctx.fillStyle = '#0d0d1a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    const centerX = 150;
+    const centerY = canvas.height / 2;
+    const baseRadius = 80;
+    
+    let x = centerX;
+    let y = centerY;
+    
+    // Draw epicycles
+    for (let n = 1; n <= numTerms; n++) {
+      const { amp, freq } = getCoefficients(n, waveType);
+      const radius = baseRadius * Math.abs(amp);
+      const angle = freq * time;
+      
+      // Draw circle
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255, 107, 157, 0.3)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      
+      // Calculate next center
+      const prevX = x, prevY = y;
+      x += radius * Math.cos(angle);
+      y += radius * Math.sin(angle) * (amp < 0 ? -1 : 1);
+      
+      // Draw radius line
+      ctx.beginPath();
+      ctx.moveTo(prevX, prevY);
+      ctx.lineTo(x, y);
+      ctx.strokeStyle = 'rgba(255, 200, 100, 0.6)';
+      ctx.stroke();
+    }
+    
+    // Draw point at end
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    
+    // Add to wave
+    wave.unshift(y);
+    if (wave.length > maxWave) wave.pop();
+    
+    // Draw connecting line
+    const waveStartX = 220;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(waveStartX, y);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.setLineDash([5, 5]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Draw wave
+    ctx.beginPath();
+    for (let i = 0; i < wave.length; i++) {
+      const wx = waveStartX + i;
+      const wy = wave[i];
+      if (i === 0) ctx.moveTo(wx, wy);
+      else ctx.lineTo(wx, wy);
+    }
+    
+    const gradient = ctx.createLinearGradient(waveStartX, 0, waveStartX + maxWave, 0);
+    gradient.addColorStop(0, '#ff6b9d');
+    gradient.addColorStop(1, '#6b9dff');
+    ctx.strokeStyle = gradient;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    // Draw axis
+    ctx.beginPath();
+    ctx.moveTo(waveStartX, centerY);
+    ctx.lineTo(canvas.width - 10, centerY);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Labels
+    ctx.fillStyle = '#888';
+    ctx.font = '12px monospace';
+    ctx.fillText(`Wave: ${waveType}`, 10, 20);
+    ctx.fillText(`Terms: ${numTerms}`, 10, 35);
+    
+    time += 0.03 * speed;
+  }
+  
+  function animate() {
+    draw();
+    requestAnimationFrame(animate);
+  }
+  
+  animate();
+})();
+</script>
+
+
+<!-- Inverse Kinematics Simulation -->
+<section class="simulation-container" id="ik-arm">
+  <h2>🦾 Inverse Kinematics</h2>
+  <p>A 2-link robot arm that follows your mouse cursor. The algorithm calculates joint angles to reach the target position.</p>
+  
+  <div class="controls">
+    <label>Segment 1: <input type="range" id="ik-seg1" min="50" max="150" step="5" value="100"><span id="ik-seg1-val">100px</span></label>
+    <label>Segment 2: <input type="range" id="ik-seg2" min="50" max="150" step="5" value="80"><span id="ik-seg2-val">80px</span></label>
+    <label>Show Angles: <input type="checkbox" id="ik-show-angles" checked></label>
+    <label>Show Reach: <input type="checkbox" id="ik-show-reach" checked></label>
+  </div>
+  
+  <div class="simulation-canvas" style="position: relative;">
+    <canvas id="ik-canvas" width="600" height="400"></canvas>
+    <div id="ik-info" style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.7); padding: 10px; border-radius: 5px; font-family: monospace; font-size: 12px;"></div>
+  </div>
+  
+  <!-- Theory Panel -->
+  <div class="theory-panel">
+    <button class="theory-toggle" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+      📐 Physics & Equations
+    </button>
+    <div class="theory-content">
+      <p style="color: #aaa; margin-bottom: 1rem;"><strong>Inverse kinematics</strong> calculates joint angles needed to reach a target position — essential for robotics.</p>
+      
+      <div class="equation-label">Problem Setup:</div>
+      <div class="equation-box">
+        <div>Given: Target position \((x, y)\) and segment lengths \(L_1, L_2\)</div>
+        <div style="margin-top: 0.5rem;">Find: Joint angles \(\theta_1, \theta_2\)</div>
+      </div>
+      
+      <div class="equation-label">Distance to Target:</div>
+      <div class="equation-box">
+        \[d = \sqrt{x^2 + y^2}\]
+      </div>
+      
+      <div class="equation-label">Elbow Angle (Law of Cosines):</div>
+      <div class="equation-box" style="border-left-color: #ffd93d;">
+        \[\cos(\theta_2) = \frac{d^2 - L_1^2 - L_2^2}{2 L_1 L_2}\]
+      </div>
+      
+      <div class="equation-label">Shoulder Angle:</div>
+      <div class="equation-box" style="border-left-color: #4ade80;">
+        \[\theta_1 = \text{atan2}(y, x) - \text{atan2}(k_2, k_1)\]
+        <div style="color: #888; font-size: 0.85rem; margin-top: 0.5rem;">where \(k_1 = L_1 + L_2\cos\theta_2\), \(k_2 = L_2\sin\theta_2\)</div>
+      </div>
+      
+      <div class="equation-label">Reachability:</div>
+      <div class="equation-box" style="border-left-color: #888;">
+        \[|L_1 - L_2| \leq d \leq L_1 + L_2\]
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #ik-arm {
+    background: #1a1a2e;
+    padding: 20px;
+    border-radius: 10px;
+    color: #eee;
+    font-family: 'Segoe UI', sans-serif;
+    max-width: 660px;
+  }
+  #ik-arm h2 {
+    margin-top: 0;
+    color: #4ade80;
+  }
+  #ik-arm .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 10px;
+    background: #252540;
+    border-radius: 8px;
+    align-items: center;
+  }
+  #ik-arm .controls label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+  }
+  #ik-arm .controls input[type="range"] {
+    width: 100px;
+    accent-color: #4ade80;
+  }
+  #ik-arm .controls input[type="checkbox"] {
+    accent-color: #4ade80;
+    width: 18px;
+    height: 18px;
+  }
+  #ik-arm .controls span {
+    min-width: 50px;
+    color: #4ade80;
+  }
+  #ik-arm canvas {
+    background: #0d0d1a;
+    border-radius: 8px;
+    display: block;
+    cursor: crosshair;
+  }
+  #ik-info {
+    color: #4ade80;
+  }
+</style>
+
+<script>
+(function() {
+  const canvas = document.getElementById('ik-canvas');
+  const ctx = canvas.getContext('2d');
+  const info = document.getElementById('ik-info');
+  
+  // Arm parameters
+  let len1 = 100;
+  let len2 = 80;
+  const baseX = canvas.width / 2;
+  const baseY = canvas.height - 80;
+  
+  // Target
+  let targetX = baseX + 100;
+  let targetY = baseY - 100;
+  
+  // Joint angles (radians)
+  let angle1 = 0;
+  let angle2 = 0;
+  
+  // Options
+  let showAngles = true;
+  let showReach = true;
+  
+  // Controls
+  const seg1Slider = document.getElementById('ik-seg1');
+  const seg2Slider = document.getElementById('ik-seg2');
+  const showAnglesCheck = document.getElementById('ik-show-angles');
+  const showReachCheck = document.getElementById('ik-show-reach');
+  
+  seg1Slider.oninput = () => {
+    len1 = parseInt(seg1Slider.value);
+    document.getElementById('ik-seg1-val').textContent = len1 + 'px';
+  };
+  seg2Slider.oninput = () => {
+    len2 = parseInt(seg2Slider.value);
+    document.getElementById('ik-seg2-val').textContent = len2 + 'px';
+  };
+  showAnglesCheck.onchange = () => showAngles = showAnglesCheck.checked;
+  showReachCheck.onchange = () => showReach = showReachCheck.checked;
+  
+  // Mouse tracking
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    targetX = e.clientX - rect.left;
+    targetY = e.clientY - rect.top;
+  });
+  
+  canvas.addEventListener('mouseleave', () => {
+    // Keep last position
+  });
+  
+  function solveIK() {
+    const dx = targetX - baseX;
+    const dy = targetY - baseY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    
+    // Clamp to reachable range
+    const maxReach = len1 + len2;
+    const minReach = Math.abs(len1 - len2);
+    const clampedDist = Math.min(Math.max(dist, minReach + 1), maxReach - 1);
+    
+    // Angle to target
+    const angleToTarget = Math.atan2(dy, dx);
+    
+    // Law of cosines for elbow angle
+    const cosAngle2 = (clampedDist * clampedDist - len1 * len1 - len2 * len2) / (2 * len1 * len2);
+    angle2 = Math.acos(Math.max(-1, Math.min(1, cosAngle2)));
+    
+    // Shoulder angle
+    const k1 = len1 + len2 * Math.cos(angle2);
+    const k2 = len2 * Math.sin(angle2);
+    angle1 = angleToTarget - Math.atan2(k2, k1);
+  }
+  
+  function draw() {
+    ctx.fillStyle = '#0d0d1a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    solveIK();
+    
+    // Calculate joint positions
+    const joint1X = baseX + len1 * Math.cos(angle1);
+    const joint1Y = baseY + len1 * Math.sin(angle1);
+    const endX = joint1X + len2 * Math.cos(angle1 + angle2);
+    const endY = joint1Y + len2 * Math.sin(angle1 + angle2);
+    
+    // Draw reach circles
+    if (showReach) {
+      // Max reach
+      ctx.beginPath();
+      ctx.arc(baseX, baseY, len1 + len2, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(74, 222, 128, 0.15)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      // Min reach
+      if (Math.abs(len1 - len2) > 0) {
+        ctx.beginPath();
+        ctx.arc(baseX, baseY, Math.abs(len1 - len2), 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(255, 100, 100, 0.15)';
+        ctx.stroke();
+      }
+    }
+    
+    // Draw base
+    ctx.beginPath();
+    ctx.arc(baseX, baseY, 15, 0, Math.PI * 2);
+    ctx.fillStyle = '#444';
+    ctx.fill();
+    ctx.strokeStyle = '#4ade80';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    
+    // Draw arm segment 1
+    ctx.beginPath();
+    ctx.moveTo(baseX, baseY);
+    ctx.lineTo(joint1X, joint1Y);
+    ctx.strokeStyle = '#4ade80';
+    ctx.lineWidth = 12;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    
+    // Draw elbow joint
+    ctx.beginPath();
+    ctx.arc(joint1X, joint1Y, 10, 0, Math.PI * 2);
+    ctx.fillStyle = '#333';
+    ctx.fill();
+    ctx.strokeStyle = '#ffd93d';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+    
+    // Draw arm segment 2
+    ctx.beginPath();
+    ctx.moveTo(joint1X, joint1Y);
+    ctx.lineTo(endX, endY);
+    ctx.strokeStyle = '#ffd93d';
+    ctx.lineWidth = 10;
+    ctx.stroke();
+    
+    // Draw end effector
+    ctx.beginPath();
+    ctx.arc(endX, endY, 8, 0, Math.PI * 2);
+    ctx.fillStyle = '#ff6b6b';
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    
+    // Draw target
+    ctx.beginPath();
+    ctx.arc(targetX, targetY, 12, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255, 107, 107, 0.5)';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([4, 4]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Crosshair at target
+    ctx.beginPath();
+    ctx.moveTo(targetX - 8, targetY);
+    ctx.lineTo(targetX + 8, targetY);
+    ctx.moveTo(targetX, targetY - 8);
+    ctx.lineTo(targetX, targetY + 8);
+    ctx.strokeStyle = 'rgba(255, 107, 107, 0.7)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Draw angle arcs
+    if (showAngles) {
+      // Shoulder angle
+      ctx.beginPath();
+      ctx.arc(baseX, baseY, 30, 0, angle1);
+      ctx.strokeStyle = 'rgba(74, 222, 128, 0.6)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      
+      // Elbow angle
+      ctx.beginPath();
+      ctx.arc(joint1X, joint1Y, 25, angle1, angle1 + angle2);
+      ctx.strokeStyle = 'rgba(255, 217, 61, 0.6)';
+      ctx.stroke();
+    }
+    
+    // Update info display
+    const deg1 = (angle1 * 180 / Math.PI).toFixed(1);
+    const deg2 = (angle2 * 180 / Math.PI).toFixed(1);
+    const dist = Math.sqrt((endX - targetX) ** 2 + (endY - targetY) ** 2);
+    
+    info.innerHTML = `
+      <div>θ₁: <span style="color:#4ade80">${deg1}°</span></div>
+      <div>θ₂: <span style="color:#ffd93d">${deg2}°</span></div>
+      <div>Error: ${dist.toFixed(1)}px</div>
+    `;
+  }
+  
+  function animate() {
+    draw();
+    requestAnimationFrame(animate);
+  }
+  
+  animate();
+})();
+</script>
+
+
+
+  <!-- ============================================ -->
+  <!-- ENGINEERING SIMULATIONS (ME) -->
+  <!-- ============================================ -->
+<!-- Beam Deflection Simulation -->
+<section class="simulation-container" id="beam-deflection-sim">
+  <h2>📐 Beam Deflection Analysis</h2>
+  <p>Click on the beam to apply a point load. Visualizes Euler-Bernoulli beam deflection for cantilever and simply-supported configurations.</p>
+  
+  <div class="controls">
+    <label>Support Type:
+      <select id="beam-support-type">
+        <option value="cantilever">Cantilever</option>
+        <option value="simply-supported">Simply Supported</option>
+      </select>
+    </label>
+    <label>Beam Length (m):
+      <input type="range" id="beam-length" min="2" max="10" value="6" step="0.5">
+      <span id="beam-length-val">6</span>
+    </label>
+    <label>EI (kN·m²):
+      <input type="range" id="beam-ei" min="100" max="2000" value="500" step="50">
+      <span id="beam-ei-val">500</span>
+    </label>
+    <label>Load (kN):
+      <input type="range" id="beam-load" min="1" max="50" value="10" step="1">
+      <span id="beam-load-val">10</span>
+    </label>
+    <button id="beam-reset">Reset</button>
+  </div>
+  
+  <div class="simulation-canvas" style="position: relative;">
+    <canvas id="beam-canvas" width="600" height="300"></canvas>
+  </div>
+  
+  <div class="results" id="beam-results">
+    <p><strong>Max Deflection:</strong> <span id="beam-max-defl">0.00</span> mm</p>
+    <p><strong>Max Bending Moment:</strong> <span id="beam-max-moment">0.00</span> kN·m</p>
+    <p><strong>Load Position:</strong> <span id="beam-load-pos">Click beam to apply load</span></p>
+  </div>
+  
+  <!-- Theory Panel -->
+  <div class="theory-panel">
+    <button class="theory-toggle" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+      📐 Physics & Equations
+    </button>
+    <div class="theory-content">
+      <p style="color: #aaa; margin-bottom: 1rem;">The <strong>Euler-Bernoulli beam theory</strong> describes the relationship between applied loads and beam deflection, assuming small deformations and linear elastic material behavior.</p>
+      
+      <div class="equation-label">Governing Equation:</div>
+      <div class="equation-box">
+        \[EI\frac{d^4 y}{dx^4} = q(x)\]
+      </div>
+      
+      <div class="equation-label">Cantilever Beam — Point Load at distance a:</div>
+      <div class="equation-box">
+        \[y(x) = \begin{cases} \frac{Px^2(3a-x)}{6EI} & x \leq a \\ \frac{Pa^2(3x-a)}{6EI} & x > a \end{cases}\]
+        <div style="margin-top: 0.5rem; color: #888; font-size: 0.85rem;">Max deflection at free end: \(\delta_{max} = \frac{Pa^2(3L-a)}{6EI}\)</div>
+      </div>
+      
+      <div class="equation-label">Simply Supported — Point Load at distance a:</div>
+      <div class="equation-box">
+        \[y(x) = \frac{Pbx}{6LEI}(L^2 - b^2 - x^2) \quad \text{for } x \leq a\]
+        <div style="margin-top: 0.5rem; color: #888; font-size: 0.85rem;">Where \(b = L - a\)</div>
+      </div>
+      
+      <div class="equation-label">Bending Moment:</div>
+      <div class="equation-box" style="border-left-color: #ff6b6b;">
+        <div>Cantilever: \(M_{max} = Pa\) (at fixed end)</div>
+        <div>Simply Supported: \(M_{max} = \frac{Pab}{L}\) (at load point)</div>
+      </div>
+      
+      <div class="equation-label">Key Parameters:</div>
+      <div class="equation-box" style="border-left-color: #888;">
+        <div>\(E\) — Young's modulus (material stiffness)</div>
+        <div>\(I\) — Second moment of area (cross-section geometry)</div>
+        <div>\(EI\) — Flexural rigidity (combined stiffness)</div>
+        <div>\(P\) — Applied point load</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #beam-deflection-sim {
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  #beam-deflection-sim h2 {
+    color: #00d4ff;
+    margin-bottom: 10px;
+  }
+  #beam-deflection-sim p {
+    color: #aaa;
+    margin-bottom: 15px;
+  }
+  #beam-deflection-sim .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+  }
+  #beam-deflection-sim .controls label {
+    color: #ddd;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #beam-deflection-sim .controls input[type="range"] {
+    width: 100px;
+  }
+  #beam-deflection-sim .controls select,
+  #beam-deflection-sim .controls button {
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: none;
+    background: #00d4ff;
+    color: #000;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  #beam-deflection-sim .simulation-canvas {
+    background: #0d0d1a;
+    border-radius: 8px;
+    display: inline-block;
+  }
+  #beam-deflection-sim .results {
+    margin-top: 15px;
+    padding: 10px;
+    background: #0d0d1a;
+    border-radius: 8px;
+    color: #0f0;
+    font-family: monospace;
+  }
+  #beam-deflection-sim .results p {
+    color: #0f0;
+    margin: 5px 0;
+  }
+</style>
+
+<script>
+(function() {
+  const canvas = document.getElementById('beam-canvas');
+  const ctx = canvas.getContext('2d');
+  
+  const supportType = document.getElementById('beam-support-type');
+  const lengthSlider = document.getElementById('beam-length');
+  const eiSlider = document.getElementById('beam-ei');
+  const loadSlider = document.getElementById('beam-load');
+  const resetBtn = document.getElementById('beam-reset');
+  
+  let loadPosition = null; // 0 to 1 along beam
+  
+  const margin = { left: 60, right: 40, top: 60, bottom: 80 };
+  const beamY = 100;
+  
+  function getParams() {
+    return {
+      type: supportType.value,
+      L: parseFloat(lengthSlider.value),
+      EI: parseFloat(eiSlider.value) * 1000, // Convert to N·m²
+      P: parseFloat(loadSlider.value) * 1000  // Convert to N
+    };
+  }
+  
+  function updateLabels() {
+    document.getElementById('beam-length-val').textContent = lengthSlider.value;
+    document.getElementById('beam-ei-val').textContent = eiSlider.value;
+    document.getElementById('beam-load-val').textContent = loadSlider.value;
+  }
+  
+  // Euler-Bernoulli beam deflection formulas
+  function calcDeflection(x, a, L, P, EI, type) {
+    if (type === 'cantilever') {
+      // Cantilever with point load at distance 'a' from fixed end
+      if (x <= a) {
+        return (P * x * x * (3 * a - x)) / (6 * EI);
+      } else {
+        return (P * a * a * (3 * x - a)) / (6 * EI);
+      }
+    } else {
+      // Simply supported with point load at distance 'a'
+      const b = L - a;
+      if (x <= a) {
+        return (P * b * x * (L * L - b * b - x * x)) / (6 * L * EI);
+      } else {
+        return (P * a * (L - x) * (2 * L * x - x * x - a * a)) / (6 * L * EI);
+      }
+    }
+  }
+  
+  function calcMaxDeflection(a, L, P, EI, type) {
+    if (type === 'cantilever') {
+      // Max at free end
+      return calcDeflection(L, a, L, P, EI, type);
+    } else {
+      // For simply supported, max is near center for center load
+      // Sample to find max
+      let maxDefl = 0;
+      for (let x = 0; x <= L; x += L / 100) {
+        const d = Math.abs(calcDeflection(x, a, L, P, EI, type));
+        if (d > maxDefl) maxDefl = d;
+      }
+      return maxDefl;
+    }
+  }
+  
+  function calcMaxMoment(a, L, P, type) {
+    if (type === 'cantilever') {
+      return P * a; // Max moment at fixed end
+    } else {
+      return (P * a * (L - a)) / L; // Max moment at load point
+    }
+  }
+  
+  function draw() {
+    const { type, L, EI, P } = getParams();
+    const beamWidth = canvas.width - margin.left - margin.right;
+    const scale = beamWidth / L;
+    
+    ctx.fillStyle = '#0d0d1a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw supports
+    ctx.strokeStyle = '#888';
+    ctx.lineWidth = 2;
+    
+    if (type === 'cantilever') {
+      // Fixed support on left
+      ctx.fillStyle = '#444';
+      ctx.fillRect(margin.left - 15, beamY - 30, 15, 60);
+      // Hatching
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        ctx.moveTo(margin.left - 15, beamY - 25 + i * 10);
+        ctx.lineTo(margin.left - 5, beamY - 15 + i * 10);
+      }
+      ctx.stroke();
+    } else {
+      // Pin support on left
+      ctx.beginPath();
+      ctx.moveTo(margin.left, beamY + 10);
+      ctx.lineTo(margin.left - 15, beamY + 35);
+      ctx.lineTo(margin.left + 15, beamY + 35);
+      ctx.closePath();
+      ctx.strokeStyle = '#888';
+      ctx.stroke();
+      
+      // Roller support on right
+      ctx.beginPath();
+      ctx.arc(margin.left + beamWidth, beamY + 25, 10, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(margin.left + beamWidth - 15, beamY + 38);
+      ctx.lineTo(margin.left + beamWidth + 15, beamY + 38);
+      ctx.stroke();
+    }
+    
+    // Draw undeformed beam (dashed)
+    ctx.strokeStyle = '#555';
+    ctx.setLineDash([5, 5]);
+    ctx.beginPath();
+    ctx.moveTo(margin.left, beamY);
+    ctx.lineTo(margin.left + beamWidth, beamY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Draw deformed beam if load is applied
+    if (loadPosition !== null) {
+      const a = loadPosition * L;
+      const deflections = [];
+      const maxDefl = calcMaxDeflection(a, L, P, EI, type);
+      const deflScale = maxDefl > 0 ? Math.min(80 / maxDefl, 50000) : 1;
+      
+      ctx.strokeStyle = '#00d4ff';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      
+      for (let i = 0; i <= 100; i++) {
+        const x = (i / 100) * L;
+        const defl = calcDeflection(x, a, L, P, EI, type);
+        const px = margin.left + (x / L) * beamWidth;
+        const py = beamY + defl * deflScale;
+        
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+        
+        deflections.push({ x, defl });
+      }
+      ctx.stroke();
+      
+      // Draw load arrow
+      const loadX = margin.left + loadPosition * beamWidth;
+      const loadDefl = calcDeflection(a, a, L, P, EI, type);
+      const loadY = beamY + loadDefl * deflScale;
+      
+      ctx.strokeStyle = '#ff4444';
+      ctx.fillStyle = '#ff4444';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(loadX, loadY - 50);
+      ctx.lineTo(loadX, loadY - 5);
+      ctx.stroke();
+      
+      // Arrow head
+      ctx.beginPath();
+      ctx.moveTo(loadX, loadY);
+      ctx.lineTo(loadX - 8, loadY - 15);
+      ctx.lineTo(loadX + 8, loadY - 15);
+      ctx.closePath();
+      ctx.fill();
+      
+      // Load label
+      ctx.fillStyle = '#ff4444';
+      ctx.font = '14px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(`${(P/1000).toFixed(1)} kN`, loadX, loadY - 58);
+      
+      // Update results
+      document.getElementById('beam-max-defl').textContent = (maxDefl * 1000).toFixed(2);
+      document.getElementById('beam-max-moment').textContent = (calcMaxMoment(a, L, P, type) / 1000).toFixed(2);
+      document.getElementById('beam-load-pos').textContent = `${a.toFixed(2)} m from left`;
+    } else {
+      // Draw unloaded beam
+      ctx.strokeStyle = '#00d4ff';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(margin.left, beamY);
+      ctx.lineTo(margin.left + beamWidth, beamY);
+      ctx.stroke();
+      
+      document.getElementById('beam-max-defl').textContent = '0.00';
+      document.getElementById('beam-max-moment').textContent = '0.00';
+      document.getElementById('beam-load-pos').textContent = 'Click beam to apply load';
+    }
+    
+    // Draw scale/axis
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    for (let i = 0; i <= 5; i++) {
+      const x = margin.left + (i / 5) * beamWidth;
+      const labelVal = (i / 5) * L;
+      ctx.fillText(labelVal.toFixed(1) + 'm', x, canvas.height - 20);
+    }
+    
+    // Title
+    ctx.fillStyle = '#00d4ff';
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText(type === 'cantilever' ? 'Cantilever Beam' : 'Simply Supported Beam', margin.left, 25);
+  }
+  
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const beamWidth = canvas.width - margin.left - margin.right;
+    
+    // Check if click is on beam area
+    if (x >= margin.left && x <= margin.left + beamWidth) {
+      loadPosition = (x - margin.left) / beamWidth;
+      // Clamp for cantilever (can't load past fixed end)
+      if (supportType.value === 'cantilever') {
+        loadPosition = Math.max(0.05, loadPosition);
+      } else {
+        loadPosition = Math.max(0.05, Math.min(0.95, loadPosition));
+      }
+      draw();
+    }
+  });
+  
+  [supportType, lengthSlider, eiSlider, loadSlider].forEach(el => {
+    el.addEventListener('input', () => {
+      updateLabels();
+      draw();
+    });
+  });
+  
+  resetBtn.addEventListener('click', () => {
+    loadPosition = null;
+    draw();
+  });
+  
+  updateLabels();
+  draw();
+})();
+</script>
+
+
+<!-- PID Controller Simulation -->
+<section class="simulation-container" id="pid-controller-sim">
+  <h2>🎛️ PID Controller Simulation</h2>
+  <p>Visualize how a PID controller reaches a setpoint. Adjust gains to see effects on overshoot, settling time, and steady-state error.</p>
+  
+  <div class="controls">
+    <label>Setpoint:
+      <input type="range" id="pid-setpoint" min="20" max="80" value="50" step="5">
+      <span id="pid-setpoint-val">50</span>
+    </label>
+    <label>Kp (Proportional):
+      <input type="range" id="pid-kp" min="0" max="2" value="0.8" step="0.1">
+      <span id="pid-kp-val">0.8</span>
+    </label>
+    <label>Ki (Integral):
+      <input type="range" id="pid-ki" min="0" max="0.5" value="0.1" step="0.02">
+      <span id="pid-ki-val">0.10</span>
+    </label>
+    <label>Kd (Derivative):
+      <input type="range" id="pid-kd" min="0" max="1" value="0.2" step="0.05">
+      <span id="pid-kd-val">0.20</span>
+    </label>
+    <button id="pid-start">Start</button>
+    <button id="pid-reset">Reset</button>
+  </div>
+  
+  <div class="simulation-canvas" style="position: relative;">
+    <canvas id="pid-canvas" width="600" height="400"></canvas>
+  </div>
+  
+  <div class="results" id="pid-results">
+    <p><strong>Current Value:</strong> <span id="pid-current">0.00</span></p>
+    <p><strong>Overshoot:</strong> <span id="pid-overshoot">0.0</span>%</p>
+    <p><strong>Settling Time:</strong> <span id="pid-settling">—</span></p>
+    <p><strong>Steady-State Error:</strong> <span id="pid-ss-error">—</span></p>
+  </div>
+  
+  <!-- Theory Panel -->
+  <div class="theory-panel">
+    <button class="theory-toggle" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+      📐 Physics & Equations
+    </button>
+    <div class="theory-content">
+      <p style="color: #aaa; margin-bottom: 1rem;">A <strong>PID controller</strong> continuously calculates an error value and applies a correction based on proportional, integral, and derivative terms.</p>
+      
+      <div class="equation-label">PID Control Law:</div>
+      <div class="equation-box">
+        \[u(t) = K_p \cdot e(t) + K_i \int_0^t e(\tau)d\tau + K_d \frac{de(t)}{dt}\]
+      </div>
+      
+      <div class="equation-label">Where:</div>
+      <div class="equation-box" style="border-left-color: #888;">
+        <div>\(e(t) = \text{setpoint} - \text{current value}\) — Error</div>
+        <div>\(K_p\) — Proportional gain (immediate response)</div>
+        <div>\(K_i\) — Integral gain (eliminates steady-state error)</div>
+        <div>\(K_d\) — Derivative gain (dampens oscillations)</div>
+      </div>
+      
+      <div class="equation-label">Live Calculation:</div>
+      <div class="equation-box live-equation" id="pid-live-eq">
+        \[u = \underbrace{K_p \cdot e}_{\text{P}} + \underbrace{K_i \cdot \Sigma e}_{\text{I}} + \underbrace{K_d \cdot \Delta e}_{\text{D}}\]
+        <div style="margin-top: 0.5rem; font-size: 0.9rem;">
+          <span class="value" id="pid-p-term">P: 0.00</span> &nbsp;|&nbsp;
+          <span class="value" id="pid-i-term">I: 0.00</span> &nbsp;|&nbsp;
+          <span class="value" id="pid-d-term">D: 0.00</span>
+        </div>
+      </div>
+      
+      <div class="equation-label">Core Algorithm:</div>
+      <div class="code-block"><span class="comment">// PID controller update</span>
+<span class="keyword">const</span> error = setpoint - currentValue;
+integral += error * dt;
+<span class="keyword">const</span> derivative = (error - prevError) / dt;
+
+<span class="keyword">const</span> output = Kp * error      <span class="comment">// Proportional</span>
+             + Ki * integral    <span class="comment">// Integral</span>  
+             + Kd * derivative; <span class="comment">// Derivative</span></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #pid-controller-sim {
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  #pid-controller-sim h2 {
+    color: #00d4ff;
+    margin-bottom: 10px;
+  }
+  #pid-controller-sim p {
+    color: #aaa;
+    margin-bottom: 15px;
+  }
+  #pid-controller-sim .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+  }
+  #pid-controller-sim .controls label {
+    color: #ddd;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #pid-controller-sim .controls input[type="range"] {
+    width: 80px;
+  }
+  #pid-controller-sim .controls button {
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: none;
+    background: #00d4ff;
+    color: #000;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  #pid-controller-sim .simulation-canvas {
+    background: #0d0d1a;
+    border-radius: 8px;
+    display: inline-block;
+  }
+  #pid-controller-sim .results {
+    margin-top: 15px;
+    padding: 10px;
+    background: #0d0d1a;
+    border-radius: 8px;
+    color: #0f0;
+    font-family: monospace;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  #pid-controller-sim .results p {
+    color: #0f0;
+    margin: 0;
+  }
+</style>
+
+<script>
+(function() {
+  const canvas = document.getElementById('pid-canvas');
+  const ctx = canvas.getContext('2d');
+  
+  const setpointSlider = document.getElementById('pid-setpoint');
+  const kpSlider = document.getElementById('pid-kp');
+  const kiSlider = document.getElementById('pid-ki');
+  const kdSlider = document.getElementById('pid-kd');
+  const startBtn = document.getElementById('pid-start');
+  const resetBtn = document.getElementById('pid-reset');
+  
+  const margin = { left: 50, right: 20, top: 30, bottom: 40 };
+  const graphWidth = canvas.width - margin.left - margin.right;
+  const graphHeight = canvas.height - margin.top - margin.bottom;
+  
+  let running = false;
+  let animId = null;
+  let time = 0;
+  let history = [];
+  let currentValue = 0;
+  let integral = 0;
+  let prevError = 0;
+  let maxValue = 0;
+  let settledTime = null;
+  
+  const dt = 0.05; // Time step
+  const maxTime = 15; // seconds
+  const systemMass = 1;
+  const systemDamping = 0.5;
+  let velocity = 0;
+  
+  function getParams() {
+    return {
+      setpoint: parseFloat(setpointSlider.value),
+      Kp: parseFloat(kpSlider.value),
+      Ki: parseFloat(kiSlider.value),
+      Kd: parseFloat(kdSlider.value)
+    };
+  }
+  
+  function updateLabels() {
+    document.getElementById('pid-setpoint-val').textContent = setpointSlider.value;
+    document.getElementById('pid-kp-val').textContent = parseFloat(kpSlider.value).toFixed(1);
+    document.getElementById('pid-ki-val').textContent = parseFloat(kiSlider.value).toFixed(2);
+    document.getElementById('pid-kd-val').textContent = parseFloat(kdSlider.value).toFixed(2);
+  }
+  
+  function reset() {
+    running = false;
+    if (animId) cancelAnimationFrame(animId);
+    time = 0;
+    history = [];
+    currentValue = 0;
+    integral = 0;
+    prevError = 0;
+    velocity = 0;
+    maxValue = 0;
+    settledTime = null;
+    startBtn.textContent = 'Start';
+    updateResults();
+    draw();
+  }
+  
+  function updateResults() {
+    const { setpoint } = getParams();
+    document.getElementById('pid-current').textContent = currentValue.toFixed(2);
+    
+    const overshoot = maxValue > setpoint ? ((maxValue - setpoint) / setpoint * 100) : 0;
+    document.getElementById('pid-overshoot').textContent = overshoot.toFixed(1);
+    
+    document.getElementById('pid-settling').textContent = settledTime ? settledTime.toFixed(2) + 's' : '—';
+    
+    const ssError = history.length > 10 ? Math.abs(setpoint - currentValue) : 0;
+    document.getElementById('pid-ss-error').textContent = ssError < 0.5 ? ssError.toFixed(2) : '—';
+  }
+  
+  function step() {
+    const { setpoint, Kp, Ki, Kd } = getParams();
+    
+    // PID calculation
+    const error = setpoint - currentValue;
+    integral += error * dt;
+    integral = Math.max(-100, Math.min(100, integral)); // Anti-windup
+    const derivative = (error - prevError) / dt;
+    
+    const output = Kp * error + Ki * integral + Kd * derivative;
+    prevError = error;
+    
+    // Second-order system simulation
+    const force = output - systemDamping * velocity;
+    const acceleration = force / systemMass;
+    velocity += acceleration * dt;
+    currentValue += velocity * dt;
+    
+    // Track max for overshoot
+    if (currentValue > maxValue) maxValue = currentValue;
+    
+    // Check settling (within 2% of setpoint)
+    if (settledTime === null && Math.abs(error) < setpoint * 0.02 && Math.abs(velocity) < 0.5) {
+      settledTime = time;
+    } else if (settledTime !== null && Math.abs(error) >= setpoint * 0.02) {
+      settledTime = null; // Reset if leaves settling band
+    }
+    
+    history.push({ time, value: currentValue, setpoint });
+    time += dt;
+  }
+  
+  function draw() {
+    const { setpoint } = getParams();
+    
+    ctx.fillStyle = '#0d0d1a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Grid
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 10; i++) {
+      const y = margin.top + (i / 10) * graphHeight;
+      ctx.beginPath();
+      ctx.moveTo(margin.left, y);
+      ctx.lineTo(margin.left + graphWidth, y);
+      ctx.stroke();
+    }
+    for (let i = 0; i <= 15; i++) {
+      const x = margin.left + (i / 15) * graphWidth;
+      ctx.beginPath();
+      ctx.moveTo(x, margin.top);
+      ctx.lineTo(x, margin.top + graphHeight);
+      ctx.stroke();
+    }
+    
+    // Axes labels
+    ctx.fillStyle = '#888';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'right';
+    for (let i = 0; i <= 5; i++) {
+      const val = 100 - i * 20;
+      const y = margin.top + (i / 5) * graphHeight;
+      ctx.fillText(val.toString(), margin.left - 5, y + 4);
+    }
+    ctx.textAlign = 'center';
+    for (let i = 0; i <= 5; i++) {
+      const t = i * 3;
+      const x = margin.left + (t / maxTime) * graphWidth;
+      ctx.fillText(t + 's', x, canvas.height - 10);
+    }
+    
+    // Setpoint line
+    const setpointY = margin.top + (1 - setpoint / 100) * graphHeight;
+    ctx.strokeStyle = '#ff6b6b';
+    ctx.setLineDash([5, 5]);
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(margin.left, setpointY);
+    ctx.lineTo(margin.left + graphWidth, setpointY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    // Setpoint label
+    ctx.fillStyle = '#ff6b6b';
+    ctx.textAlign = 'left';
+    ctx.fillText('Setpoint: ' + setpoint, margin.left + 5, setpointY - 5);
+    
+    // 2% settling band
+    ctx.fillStyle = 'rgba(0, 255, 0, 0.1)';
+    const bandTop = margin.top + (1 - setpoint * 1.02 / 100) * graphHeight;
+    const bandBot = margin.top + (1 - setpoint * 0.98 / 100) * graphHeight;
+    ctx.fillRect(margin.left, bandTop, graphWidth, bandBot - bandTop);
+    
+    // Response curve
+    if (history.length > 1) {
+      ctx.strokeStyle = '#00d4ff';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      
+      for (let i = 0; i < history.length; i++) {
+        const h = history[i];
+        const x = margin.left + (h.time / maxTime) * graphWidth;
+        const y = margin.top + (1 - Math.max(0, Math.min(100, h.value)) / 100) * graphHeight;
+        
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+      
+      // Current value marker
+      const lastH = history[history.length - 1];
+      const cx = margin.left + (lastH.time / maxTime) * graphWidth;
+      const cy = margin.top + (1 - Math.max(0, Math.min(100, lastH.value)) / 100) * graphHeight;
+      ctx.fillStyle = '#00d4ff';
+      ctx.beginPath();
+      ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    // Legend
+    ctx.fillStyle = '#00d4ff';
+    ctx.fillRect(canvas.width - 120, 10, 15, 3);
+    ctx.fillStyle = '#ddd';
+    ctx.font = '11px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText('Actual', canvas.width - 100, 14);
+    
+    ctx.fillStyle = '#ff6b6b';
+    ctx.fillRect(canvas.width - 120, 25, 15, 3);
+    ctx.fillStyle = '#ddd';
+    ctx.fillText('Setpoint', canvas.width - 100, 29);
+  }
+  
+  function animate() {
+    if (!running) return;
+    
+    if (time < maxTime) {
+      step();
+      updateResults();
+      draw();
+      animId = requestAnimationFrame(animate);
+    } else {
+      running = false;
+      startBtn.textContent = 'Start';
+    }
+  }
+  
+  startBtn.addEventListener('click', () => {
+    if (running) {
+      running = false;
+      startBtn.textContent = 'Resume';
+    } else {
+      if (time >= maxTime) reset();
+      running = true;
+      startBtn.textContent = 'Pause';
+      animate();
+    }
+  });
+  
+  resetBtn.addEventListener('click', reset);
+  
+  [setpointSlider, kpSlider, kiSlider, kdSlider].forEach(el => {
+    el.addEventListener('input', () => {
+      updateLabels();
+      if (!running) draw();
+    });
+  });
+  
+  updateLabels();
+  draw();
+})();
+</script>
+
+
+<!-- Gear Train Simulation -->
+<section class="simulation-container" id="gear-train-sim">
+  <h2>⚙️ Gear Train Mechanics</h2>
+  <p>Visualize meshed gears with adjustable teeth counts. See how gear ratios affect output speed and torque.</p>
+  
+  <div class="controls">
+    <label>Input RPM:
+      <input type="range" id="gear-rpm" min="10" max="120" value="60" step="5">
+      <span id="gear-rpm-val">60</span>
+    </label>
+    <label>Gear 1 (Driver):
+      <input type="range" id="gear-teeth1" min="12" max="48" value="24" step="2">
+      <span id="gear-teeth1-val">24</span>T
+    </label>
+    <label>Gear 2:
+      <input type="range" id="gear-teeth2" min="12" max="48" value="36" step="2">
+      <span id="gear-teeth2-val">36</span>T
+    </label>
+    <label>Gear 3 (Output):
+      <input type="range" id="gear-teeth3" min="12" max="48" value="18" step="2">
+      <span id="gear-teeth3-val">18</span>T
+    </label>
+    <button id="gear-toggle">Pause</button>
+  </div>
+  
+  <div class="simulation-canvas" style="position: relative;">
+    <canvas id="gear-canvas" width="600" height="400"></canvas>
+  </div>
+  
+  <div class="results" id="gear-results">
+    <p><strong>Total Gear Ratio:</strong> <span id="gear-ratio">1.00</span></p>
+    <p><strong>Output RPM:</strong> <span id="gear-output-rpm">60</span></p>
+    <p><strong>Torque Multiplier:</strong> <span id="gear-torque">1.00</span>×</p>
+  </div>
+  
+  <!-- Theory Panel -->
+  <div class="theory-panel">
+    <button class="theory-toggle" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+      📐 Physics & Equations
+    </button>
+    <div class="theory-content">
+      <p style="color: #aaa; margin-bottom: 1rem;"><strong>Gear trains</strong> transmit rotational motion while changing speed and torque.</p>
+      
+      <div class="equation-label">Gear Ratio:</div>
+      <div class="equation-box">
+        \[i = \frac{N_{driven}}{N_{driver}} = \frac{\omega_{in}}{\omega_{out}}\]
+      </div>
+      
+      <div class="equation-label">Speed Relationship:</div>
+      <div class="equation-box" style="border-left-color: #45b7d1;">
+        \[\omega_{out} = \omega_{in} \cdot \frac{N_{driver}}{N_{driven}}\]
+        <div style="color: #888; font-size: 0.85rem; margin-top: 0.5rem;">More teeth on driven gear = slower output</div>
+      </div>
+      
+      <div class="equation-label">Torque Relationship:</div>
+      <div class="equation-box" style="border-left-color: #ff6b6b;">
+        \[\tau_{out} = \tau_{in} \cdot \frac{N_{driven}}{N_{driver}}\]
+        <div style="color: #888; font-size: 0.85rem; margin-top: 0.5rem;">Speed down = torque up (power conserved)</div>
+      </div>
+      
+      <div class="equation-label">Multi-Stage Train:</div>
+      <div class="equation-box" style="border-left-color: #888;">
+        \[i_{total} = i_1 \times i_2 \times ... \times i_n\]
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #gear-train-sim {
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  #gear-train-sim h2 {
+    color: #00d4ff;
+    margin-bottom: 10px;
+  }
+  #gear-train-sim p {
+    color: #aaa;
+    margin-bottom: 15px;
+  }
+  #gear-train-sim .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+  }
+  #gear-train-sim .controls label {
+    color: #ddd;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #gear-train-sim .controls input[type="range"] {
+    width: 80px;
+  }
+  #gear-train-sim .controls button {
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: none;
+    background: #00d4ff;
+    color: #000;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  #gear-train-sim .simulation-canvas {
+    background: #0d0d1a;
+    border-radius: 8px;
+    display: inline-block;
+  }
+  #gear-train-sim .results {
+    margin-top: 15px;
+    padding: 10px;
+    background: #0d0d1a;
+    border-radius: 8px;
+    color: #0f0;
+    font-family: monospace;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  #gear-train-sim .results p {
+    color: #0f0;
+    margin: 0;
+  }
+</style>
+
+<script>
+(function() {
+  const canvas = document.getElementById('gear-canvas');
+  const ctx = canvas.getContext('2d');
+  
+  const rpmSlider = document.getElementById('gear-rpm');
+  const teeth1Slider = document.getElementById('gear-teeth1');
+  const teeth2Slider = document.getElementById('gear-teeth2');
+  const teeth3Slider = document.getElementById('gear-teeth3');
+  const toggleBtn = document.getElementById('gear-toggle');
+  
+  let running = true;
+  let angle1 = 0;
+  let animId = null;
+  let lastTime = 0;
+  
+  const module = 4; // Gear module (affects size)
+  const centerY = 200;
+  
+  function getParams() {
+    return {
+      rpm: parseFloat(rpmSlider.value),
+      t1: parseInt(teeth1Slider.value),
+      t2: parseInt(teeth2Slider.value),
+      t3: parseInt(teeth3Slider.value)
+    };
+  }
+  
+  function updateLabels() {
+    document.getElementById('gear-rpm-val').textContent = rpmSlider.value;
+    document.getElementById('gear-teeth1-val').textContent = teeth1Slider.value;
+    document.getElementById('gear-teeth2-val').textContent = teeth2Slider.value;
+    document.getElementById('gear-teeth3-val').textContent = teeth3Slider.value;
+  }
+  
+  function updateResults() {
+    const { rpm, t1, t2, t3 } = getParams();
+    
+    // Gear 1 drives Gear 2, Gear 2 drives Gear 3
+    const ratio1 = t2 / t1; // Gear 2 speed reduction
+    const ratio2 = t3 / t2; // Gear 3 speed factor
+    const totalRatio = t1 / t3; // Overall ratio (input to output)
+    const outputRpm = rpm * totalRatio;
+    
+    document.getElementById('gear-ratio').textContent = totalRatio.toFixed(2);
+    document.getElementById('gear-output-rpm').textContent = outputRpm.toFixed(1);
+    document.getElementById('gear-torque').textContent = (1 / totalRatio).toFixed(2);
+  }
+  
+  function drawGear(cx, cy, teeth, angle, color, label) {
+    const radius = (teeth * module) / 2;
+    const toothHeight = module * 2;
+    const toothWidth = Math.PI / teeth;
+    
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(angle);
+    
+    // Outer gear shape with teeth
+    ctx.beginPath();
+    for (let i = 0; i < teeth; i++) {
+      const a = (i / teeth) * Math.PI * 2;
+      const a1 = a - toothWidth * 0.4;
+      const a2 = a + toothWidth * 0.4;
+      
+      // Tooth
+      ctx.lineTo(Math.cos(a1) * radius, Math.sin(a1) * radius);
+      ctx.lineTo(Math.cos(a1) * (radius + toothHeight), Math.sin(a1) * (radius + toothHeight));
+      ctx.lineTo(Math.cos(a2) * (radius + toothHeight), Math.sin(a2) * (radius + toothHeight));
+      ctx.lineTo(Math.cos(a2) * radius, Math.sin(a2) * radius);
+    }
+    ctx.closePath();
+    
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Inner circle (hub)
+    ctx.beginPath();
+    ctx.arc(0, 0, radius * 0.3, 0, Math.PI * 2);
+    ctx.fillStyle = '#333';
+    ctx.fill();
+    ctx.stroke();
+    
+    // Center hole
+    ctx.beginPath();
+    ctx.arc(0, 0, radius * 0.1, 0, Math.PI * 2);
+    ctx.fillStyle = '#0d0d1a';
+    ctx.fill();
+    
+    // Spokes
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 3;
+    for (let i = 0; i < 4; i++) {
+      const a = (i / 4) * Math.PI * 2;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(a) * radius * 0.15, Math.sin(a) * radius * 0.15);
+      ctx.lineTo(Math.cos(a) * radius * 0.85, Math.sin(a) * radius * 0.85);
+      ctx.stroke();
+    }
+    
+    ctx.restore();
+    
+    // Label
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(label, cx, cy + radius + toothHeight + 20);
+  }
+  
+  function draw(timestamp) {
+    if (lastTime === 0) lastTime = timestamp;
+    const dt = (timestamp - lastTime) / 1000;
+    lastTime = timestamp;
+    
+    const { rpm, t1, t2, t3 } = getParams();
+    
+    // Calculate radii
+    const r1 = (t1 * module) / 2 + module * 2;
+    const r2 = (t2 * module) / 2 + module * 2;
+    const r3 = (t3 * module) / 2 + module * 2;
+    
+    // Position gears
+    const x1 = 120;
+    const x2 = x1 + r1 + r2 - module;
+    const x3 = x2 + r2 + r3 - module;
+    
+    // Update angles
+    if (running) {
+      const omega1 = (rpm * Math.PI * 2) / 60; // rad/s
+      angle1 += omega1 * dt;
+    }
+    
+    // Gear 2 rotates opposite to gear 1
+    const angle2 = -angle1 * (t1 / t2);
+    // Gear 3 rotates opposite to gear 2
+    const angle3 = -angle2 * (t2 / t3);
+    
+    // Clear
+    ctx.fillStyle = '#0d0d1a';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Draw gears (back to front)
+    drawGear(x1, centerY, t1, angle1, '#ff6b6b', `Driver (${t1}T)`);
+    drawGear(x2, centerY, t2, angle2, '#4ecdc4', `Idler (${t2}T)`);
+    drawGear(x3, centerY, t3, angle3, '#45b7d1', `Output (${t3}T)`);
+    
+    // Direction arrows
+    ctx.strokeStyle = '#ffff00';
+    ctx.lineWidth = 2;
+    
+    // Arrow for gear 1 (clockwise shown as input)
+    const arrowR = r1 + 25;
+    ctx.beginPath();
+    ctx.arc(x1, centerY, arrowR, -0.5, 0.5);
+    ctx.stroke();
+    ctx.fillStyle = '#ffff00';
+    ctx.beginPath();
+    ctx.moveTo(x1 + arrowR * Math.cos(0.5), centerY + arrowR * Math.sin(0.5));
+    ctx.lineTo(x1 + arrowR * Math.cos(0.5) + 10, centerY + arrowR * Math.sin(0.5) - 5);
+    ctx.lineTo(x1 + arrowR * Math.cos(0.5) + 5, centerY + arrowR * Math.sin(0.5) + 8);
+    ctx.closePath();
+    ctx.fill();
+    
+    // RPM labels
+    ctx.fillStyle = '#ffff00';
+    ctx.font = '12px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText(`${rpm} RPM`, x1, centerY - r1 - 15);
+    
+    const rpm2 = rpm * (t1 / t2);
+    ctx.fillText(`${rpm2.toFixed(1)} RPM`, x2, centerY - r2 - 15);
+    
+    const rpm3 = rpm * (t1 / t3);
+    ctx.fillStyle = '#0f0';
+    ctx.fillText(`${rpm3.toFixed(1)} RPM`, x3, centerY - r3 - 15);
+    
+    // Title
+    ctx.fillStyle = '#00d4ff';
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText('Gear Train: Speed & Torque Transmission', 20, 25);
+    
+    updateResults();
+    
+    if (running) {
+      animId = requestAnimationFrame(draw);
+    }
+  }
+  
+  toggleBtn.addEventListener('click', () => {
+    running = !running;
+    toggleBtn.textContent = running ? 'Pause' : 'Play';
+    if (running) {
+      lastTime = 0;
+      animId = requestAnimationFrame(draw);
+    }
+  });
+  
+  [rpmSlider, teeth1Slider, teeth2Slider, teeth3Slider].forEach(el => {
+    el.addEventListener('input', () => {
+      updateLabels();
+      updateResults();
+    });
+  });
+  
+  updateLabels();
+  updateResults();
+  animId = requestAnimationFrame(draw);
+})();
+</script>
+
+
+<!-- 2D Heat Conduction Simulation -->
+<section class="simulation-container" id="heat-conduction-sim">
+  <h2>🔥 2D Heat Conduction</h2>
+  <p>Click to add heat sources and watch thermal energy diffuse through the material. Based on the 2D heat equation.</p>
+  
+  <div class="controls">
+    <label>Thermal Diffusivity (α):
+      <input type="range" id="heat-alpha" min="0.1" max="2" value="0.8" step="0.1">
+      <span id="heat-alpha-val">0.8</span>
+    </label>
+    <label>Heat Source Temp:
+      <input type="range" id="heat-source-temp" min="50" max="100" value="100" step="5">
+      <span id="heat-source-temp-val">100</span>°
+    </label>
+    <label>Boundary:
+      <select id="heat-boundary">
+        <option value="fixed">Fixed (0°)</option>
+        <option value="insulated">Insulated</option>
+      </select>
+    </label>
+    <button id="heat-toggle">Pause</button>
+    <button id="heat-reset">Reset</button>
+  </div>
+  
+  <div class="simulation-canvas" style="position: relative;">
+    <canvas id="heat-canvas" width="600" height="400"></canvas>
+  </div>
+  
+  <div class="results" id="heat-results">
+    <p><strong>Max Temp:</strong> <span id="heat-max">0.0</span>°</p>
+    <p><strong>Min Temp:</strong> <span id="heat-min">0.0</span>°</p>
+    <p><strong>Avg Temp:</strong> <span id="heat-avg">0.0</span>°</p>
+    <p><strong>Time:</strong> <span id="heat-time">0.0</span>s</p>
+  </div>
+  
+  <!-- Theory Panel -->
+  <div class="theory-panel">
+    <button class="theory-toggle" onclick="this.classList.toggle('active'); this.nextElementSibling.classList.toggle('show')">
+      📐 Physics & Equations
+    </button>
+    <div class="theory-content">
+      <p style="color: #aaa; margin-bottom: 1rem;">The <strong>heat equation</strong> describes how temperature evolves over time through diffusion.</p>
+      
+      <div class="equation-label">Heat Equation (2D):</div>
+      <div class="equation-box">
+        \[\frac{\partial T}{\partial t} = \alpha \nabla^2 T = \alpha \left( \frac{\partial^2 T}{\partial x^2} + \frac{\partial^2 T}{\partial y^2} \right)\]
+      </div>
+      
+      <div class="equation-label">Thermal Diffusivity:</div>
+      <div class="equation-box" style="border-left-color: #ff6b6b;">
+        \[\alpha = \frac{k}{\rho c_p}\]
+        <div style="color: #888; font-size: 0.85rem; margin-top: 0.5rem;">Higher α = faster heat spreading</div>
+      </div>
+      
+      <div class="equation-label">Finite Difference (numerical):</div>
+      <div class="equation-box" style="border-left-color: #4ecdc4;">
+        \[T_{new} = T + \alpha \Delta t \frac{T_L + T_R + T_U + T_D - 4T}{\Delta x^2}\]
+      </div>
+      
+      <div class="equation-label">Boundary Conditions:</div>
+      <div class="equation-box" style="border-left-color: #888;">
+        <div><strong>Dirichlet:</strong> Fixed temperature (T = constant)</div>
+        <div style="margin-top: 0.3rem;"><strong>Neumann:</strong> Insulated (∂T/∂n = 0)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  #heat-conduction-sim {
+    background: #1a1a2e;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+  }
+  #heat-conduction-sim h2 {
+    color: #00d4ff;
+    margin-bottom: 10px;
+  }
+  #heat-conduction-sim p {
+    color: #aaa;
+    margin-bottom: 15px;
+  }
+  #heat-conduction-sim .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 15px;
+    align-items: center;
+  }
+  #heat-conduction-sim .controls label {
+    color: #ddd;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #heat-conduction-sim .controls input[type="range"] {
+    width: 80px;
+  }
+  #heat-conduction-sim .controls select,
+  #heat-conduction-sim .controls button {
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: none;
+    background: #00d4ff;
+    color: #000;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  #heat-conduction-sim .simulation-canvas {
+    background: #0d0d1a;
+    border-radius: 8px;
+    display: inline-block;
+    cursor: crosshair;
+  }
+  #heat-conduction-sim .results {
+    margin-top: 15px;
+    padding: 10px;
+    background: #0d0d1a;
+    border-radius: 8px;
+    color: #0f0;
+    font-family: monospace;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  #heat-conduction-sim .results p {
+    color: #0f0;
+    margin: 0;
+  }
+</style>
+
+<script>
+(function() {
+  const canvas = document.getElementById('heat-canvas');
+  const ctx = canvas.getContext('2d');
+  
+  const alphaSlider = document.getElementById('heat-alpha');
+  const sourceTempSlider = document.getElementById('heat-source-temp');
+  const boundarySelect = document.getElementById('heat-boundary');
+  const toggleBtn = document.getElementById('heat-toggle');
+  const resetBtn = document.getElementById('heat-reset');
+  
+  const gridW = 120;
+  const gridH = 80;
+  const cellW = canvas.width / gridW;
+  const cellH = canvas.height / gridH;
+  
+  let grid = [];
+  let newGrid = [];
+  let running = true;
+  let animId = null;
+  let simTime = 0;
+  let heatSources = [];
+  
+  function initGrid() {
+    grid = [];
+    newGrid = [];
+    for (let y = 0; y < gridH; y++) {
+      grid[y] = [];
+      newGrid[y] = [];
+      for (let x = 0; x < gridW; x++) {
+        grid[y][x] = 0;
+        newGrid[y][x] = 0;
+      }
+    }
+    heatSources = [];
+    simTime = 0;
+  }
+  
+  function updateLabels() {
+    document.getElementById('heat-alpha-val').textContent = alphaSlider.value;
+    document.getElementById('heat-source-temp-val').textContent = sourceTempSlider.value;
+  }
+  
+  function getColor(temp) {
+    // Blue (cold) to Red (hot)
+    const t = Math.max(0, Math.min(1, temp / 100));
+    
+    let r, g, b;
+    if (t < 0.25) {
+      // Blue to cyan
+      r = 0;
+      g = Math.floor(t * 4 * 255);
+      b = 255;
+    } else if (t < 0.5) {
+      // Cyan to green
+      r = 0;
+      g = 255;
+      b = Math.floor((0.5 - t) * 4 * 255);
+    } else if (t < 0.75) {
+      // Green to yellow
+      r = Math.floor((t - 0.5) * 4 * 255);
+      g = 255;
+      b = 0;
+    } else {
+      // Yellow to red
+      r = 255;
+      g = Math.floor((1 - t) * 4 * 255);
+      b = 0;
+    }
+    
+    return `rgb(${r},${g},${b})`;
+  }
+  
+  function step() {
+    const alpha = parseFloat(alphaSlider.value);
+    const boundary = boundarySelect.value;
+    const dt = 0.1;
+    const dx = 1;
+    const factor = alpha * dt / (dx * dx);
+    
+    // Apply heat sources
+    for (const src of heatSources) {
+      const temp = parseFloat(sourceTempSlider.value);
+      for (let dy = -2; dy <= 2; dy++) {
+        for (let dx = -2; dx <= 2; dx++) {
+          const y = src.y + dy;
+          const x = src.x + dx;
+          if (y >= 0 && y < gridH && x >= 0 && x < gridW) {
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist <= 2) {
+              grid[y][x] = temp * (1 - dist / 3);
+            }
+          }
+        }
+      }
+    }
+    
+    // Finite difference heat equation
+    for (let y = 1; y < gridH - 1; y++) {
+      for (let x = 1; x < gridW - 1; x++) {
+        const laplacian = grid[y-1][x] + grid[y+1][x] + 
+                         grid[y][x-1] + grid[y][x+1] - 4 * grid[y][x];
+        newGrid[y][x] = grid[y][x] + factor * laplacian;
+        
+        // Clamp
+        newGrid[y][x] = Math.max(0, Math.min(100, newGrid[y][x]));
+      }
+    }
+    
+    // Boundary conditions
+    for (let x = 0; x < gridW; x++) {
+      if (boundary === 'fixed') {
+        newGrid[0][x] = 0;
+        newGrid[gridH-1][x] = 0;
+      } else {
+        newGrid[0][x] = newGrid[1][x];
+        newGrid[gridH-1][x] = newGrid[gridH-2][x];
+      }
+    }
+    for (let y = 0; y < gridH; y++) {
+      if (boundary === 'fixed') {
+        newGrid[y][0] = 0;
+        newGrid[y][gridW-1] = 0;
+      } else {
+        newGrid[y][0] = newGrid[y][1];
+        newGrid[y][gridW-1] = newGrid[y][gridW-2];
+      }
+    }
+    
+    // Swap grids
+    [grid, newGrid] = [newGrid, grid];
+    simTime += dt;
+  }
+  
+  function draw() {
+    // Use image data for performance
+    const imageData = ctx.createImageData(canvas.width, canvas.height);
+    const data = imageData.data;
+    
+    let maxTemp = 0, minTemp = 100, sumTemp = 0;
+    
+    for (let y = 0; y < gridH; y++) {
+      for (let x = 0; x < gridW; x++) {
+        const temp = grid[y][x];
+        maxTemp = Math.max(maxTemp, temp);
+        minTemp = Math.min(minTemp, temp);
+        sumTemp += temp;
+        
+        const t = Math.max(0, Math.min(1, temp / 100));
+        
+        let r, g, b;
+        if (t < 0.25) {
+          r = 0;
+          g = Math.floor(t * 4 * 255);
+          b = 255;
+        } else if (t < 0.5) {
+          r = 0;
+          g = 255;
+          b = Math.floor((0.5 - t) * 4 * 255);
+        } else if (t < 0.75) {
+          r = Math.floor((t - 0.5) * 4 * 255);
+          g = 255;
+          b = 0;
+        } else {
+          r = 255;
+          g = Math.floor((1 - t) * 4 * 255);
+          b = 0;
+        }
+        
+        // Fill cell pixels
+        const startPx = Math.floor(x * cellW);
+        const endPx = Math.floor((x + 1) * cellW);
+        const startPy = Math.floor(y * cellH);
+        const endPy = Math.floor((y + 1) * cellH);
+        
+        for (let py = startPy; py < endPy; py++) {
+          for (let px = startPx; px < endPx; px++) {
+            const idx = (py * canvas.width + px) * 4;
+            data[idx] = r;
+            data[idx + 1] = g;
+            data[idx + 2] = b;
+            data[idx + 3] = 255;
+          }
+        }
+      }
+    }
+    
+    ctx.putImageData(imageData, 0, 0);
+    
+    // Draw heat source markers
+    ctx.fillStyle = '#fff';
+    for (const src of heatSources) {
+      ctx.beginPath();
+      ctx.arc(src.x * cellW + cellW/2, src.y * cellH + cellH/2, 5, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    
+    // Color scale legend
+    const legendX = canvas.width - 30;
+    const legendH = 150;
+    const legendY = (canvas.height - legendH) / 2;
+    
+    for (let i = 0; i < legendH; i++) {
+      const t = 1 - i / legendH;
+      ctx.fillStyle = getColor(t * 100);
+      ctx.fillRect(legendX, legendY + i, 20, 1);
+    }
+    ctx.strokeStyle = '#fff';
+    ctx.strokeRect(legendX, legendY, 20, legendH);
+    
+    ctx.fillStyle = '#fff';
+    ctx.font = '10px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText('100°', legendX + 22, legendY + 5);
+    ctx.fillText('50°', legendX + 22, legendY + legendH/2);
+    ctx.fillText('0°', legendX + 22, legendY + legendH);
+    
+    // Update stats
+    document.getElementById('heat-max').textContent = maxTemp.toFixed(1);
+    document.getElementById('heat-min').textContent = minTemp.toFixed(1);
+    document.getElementById('heat-avg').textContent = (sumTemp / (gridW * gridH)).toFixed(1);
+    document.getElementById('heat-time').textContent = simTime.toFixed(1);
+  }
+  
+  function animate() {
+    if (!running) return;
+    
+    // Multiple steps per frame for faster diffusion
+    for (let i = 0; i < 3; i++) {
+      step();
+    }
+    draw();
+    animId = requestAnimationFrame(animate);
+  }
+  
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.floor((e.clientX - rect.left) / cellW);
+    const y = Math.floor((e.clientY - rect.top) / cellH);
+    
+    if (x >= 0 && x < gridW && y >= 0 && y < gridH) {
+      heatSources.push({ x, y });
+    }
+  });
+  
+  canvas.addEventListener('mousemove', (e) => {
+    if (e.buttons === 1) { // Left mouse held
+      const rect = canvas.getBoundingClientRect();
+      const x = Math.floor((e.clientX - rect.left) / cellW);
+      const y = Math.floor((e.clientY - rect.top) / cellH);
+      
+      if (x >= 0 && x < gridW && y >= 0 && y < gridH) {
+        // Check if not too close to existing source
+        const tooClose = heatSources.some(s => 
+          Math.abs(s.x - x) < 3 && Math.abs(s.y - y) < 3
+        );
+        if (!tooClose) {
+          heatSources.push({ x, y });
+        }
+      }
+    }
+  });
+  
+  toggleBtn.addEventListener('click', () => {
+    running = !running;
+    toggleBtn.textContent = running ? 'Pause' : 'Play';
+    if (running) {
+      animId = requestAnimationFrame(animate);
+    }
+  });
+  
+  resetBtn.addEventListener('click', () => {
+    initGrid();
+    draw();
+  });
+  
+  [alphaSlider, sourceTempSlider].forEach(el => {
+    el.addEventListener('input', updateLabels);
+  });
+  
+  initGrid();
+  updateLabels();
+  draw();
+  animId = requestAnimationFrame(animate);
+})();
+</script>
+
+
+  <section>
+    <blockquote>
+      "To understand the universe, you must understand the language in which it is written — mathematics and physics."
+      <cite>— Galileo Galilei (paraphrased)</cite>
+    </blockquote>
+  </section>
+
+  <footer>
+    <p>&copy; 2026 John Chen. Built with curiosity and caffeine.</p>
+  </footer>
+
+  <script>
+    // ========================================
+    // DOUBLE PENDULUM SIMULATION
+    // ========================================
+    (function() {
+      const canvas = document.getElementById('pendulumCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      // State
+      let L1 = 100, L2 = 100, m1 = 15, m2 = 15;
+      let a1, a2, a1_v = 0, a2_v = 0;
+      const g = 1;
+      let trail = [];
+      let showTrail = true;
+      
+      // Initialize angles
+      function init() {
+        a1 = Math.PI / 2 + (Math.random() - 0.5) * 0.5;
+        a2 = Math.PI / 2 + (Math.random() - 0.5) * 0.5;
+        a1_v = 0;
+        a2_v = 0;
+        trail = [];
+      }
+      init();
+      
+      // Controls
+      const sliderL1 = document.getElementById('pendL1');
+      const sliderL2 = document.getElementById('pendL2');
+      const sliderM1 = document.getElementById('pendM1');
+      const sliderM2 = document.getElementById('pendM2');
+      const trailCheck = document.getElementById('pendTrail');
+      
+      sliderL1.oninput = () => { L1 = +sliderL1.value; document.getElementById('pendL1Val').textContent = (L1/100).toFixed(1); };
+      sliderL2.oninput = () => { L2 = +sliderL2.value; document.getElementById('pendL2Val').textContent = (L2/100).toFixed(1); };
+      sliderM1.oninput = () => { m1 = +sliderM1.value; document.getElementById('pendM1Val').textContent = m1; };
+      sliderM2.oninput = () => { m2 = +sliderM2.value; document.getElementById('pendM2Val').textContent = m2; };
+      trailCheck.onchange = () => { showTrail = trailCheck.checked; if (!showTrail) trail = []; };
+      
+      document.getElementById('pendReset').onclick = init;
+      canvas.onclick = init;
+      
+      function update() {
+        // Double pendulum equations of motion (Lagrangian mechanics)
+        const num1 = -g * (2 * m1 + m2) * Math.sin(a1);
+        const num2 = -m2 * g * Math.sin(a1 - 2 * a2);
+        const num3 = -2 * Math.sin(a1 - a2) * m2;
+        const num4 = a2_v * a2_v * L2 + a1_v * a1_v * L1 * Math.cos(a1 - a2);
+        const den = L1 * (2 * m1 + m2 - m2 * Math.cos(2 * a1 - 2 * a2));
+        const a1_a = (num1 + num2 + num3 * num4) / den;
+        
+        const num5 = 2 * Math.sin(a1 - a2);
+        const num6 = a1_v * a1_v * L1 * (m1 + m2);
+        const num7 = g * (m1 + m2) * Math.cos(a1);
+        const num8 = a2_v * a2_v * L2 * m2 * Math.cos(a1 - a2);
+        const den2 = L2 * (2 * m1 + m2 - m2 * Math.cos(2 * a1 - 2 * a2));
+        const a2_a = (num5 * (num6 + num7 + num8)) / den2;
+        
+        a1_v += a1_a;
+        a2_v += a2_a;
+        a1 += a1_v;
+        a2 += a2_v;
+        
+        // Damping
+        a1_v *= 0.9999;
+        a2_v *= 0.9999;
+      }
+      
+      function draw() {
+        ctx.fillStyle = '#0d0d15';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        const cx = canvas.width / 2;
+        const cy = 80;
+        
+        const x1 = cx + L1 * Math.sin(a1);
+        const y1 = cy + L1 * Math.cos(a1);
+        const x2 = x1 + L2 * Math.sin(a2);
+        const y2 = y1 + L2 * Math.cos(a2);
+        
+        // Trail
+        if (showTrail) {
+          trail.push({x: x2, y: y2});
+          if (trail.length > 500) trail.shift();
+          
+          ctx.beginPath();
+          for (let i = 0; i < trail.length; i++) {
+            const alpha = i / trail.length;
+            ctx.strokeStyle = `rgba(74, 158, 255, ${alpha * 0.8})`;
+            if (i === 0) {
+              ctx.moveTo(trail[i].x, trail[i].y);
+            } else {
+              ctx.lineTo(trail[i].x, trail[i].y);
+            }
+          }
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+        
+        // Pivot
+        ctx.fillStyle = '#666';
+        ctx.beginPath();
+        ctx.arc(cx, cy, 6, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // Rods
+        ctx.strokeStyle = '#888';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.stroke();
+        
+        // Mass 1
+        ctx.fillStyle = '#ff6b6b';
+        ctx.beginPath();
+        ctx.arc(x1, y1, Math.sqrt(m1) * 2 + 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#ff8787';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // Mass 2
+        ctx.fillStyle = '#4ecdc4';
+        ctx.beginPath();
+        ctx.arc(x2, y2, Math.sqrt(m2) * 2 + 5, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = '#7eddd7';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+      
+      function animate() {
+        for (let i = 0; i < 2; i++) update();
+        draw();
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    // ========================================
+    // SPRING-MASS-DAMPER SIMULATION
+    // ========================================
+    (function() {
+      const canvas = document.getElementById('springCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      let k = 80, c = 5, m = 5;
+      let x = 0, v = 0;
+      const equilibrium = 350;
+      let isDragging = false;
+      let history = [];
+      
+      // Controls
+      const sliderK = document.getElementById('springK');
+      const sliderC = document.getElementById('springC');
+      const sliderM = document.getElementById('springM');
+      
+      function updateZeta() {
+        const zeta = c / (2 * Math.sqrt(k * m));
+        const zetaEl = document.getElementById('springZeta');
+        if (zeta < 1) {
+          zetaEl.textContent = zeta.toFixed(3) + ' (underdamped)';
+          zetaEl.style.color = '#4ecdc4';
+        } else if (zeta === 1) {
+          zetaEl.textContent = zeta.toFixed(3) + ' (critical)';
+          zetaEl.style.color = '#ffd93d';
+        } else {
+          zetaEl.textContent = zeta.toFixed(3) + ' (overdamped)';
+          zetaEl.style.color = '#ff6b6b';
+        }
+      }
+      
+      sliderK.oninput = () => { k = +sliderK.value; document.getElementById('springKVal').textContent = k; updateZeta(); };
+      sliderC.oninput = () => { c = +sliderC.value; document.getElementById('springCVal').textContent = c; updateZeta(); };
+      sliderM.oninput = () => { m = +sliderM.value; document.getElementById('springMVal').textContent = m; updateZeta(); };
+      updateZeta();
+      
+      document.getElementById('springReset').onclick = () => { x = 0; v = 0; history = []; };
+      document.getElementById('springPush').onclick = () => { v = 15; };
+      
+      // Drag interaction
+      canvas.onmousedown = (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const mx = e.clientX - rect.left;
+        const my = e.clientY - rect.top;
+        const massX = equilibrium + x * 2;
+        const massY = 150;
+        if (Math.abs(mx - massX) < 40 && Math.abs(my - massY) < 40) {
+          isDragging = true;
+        }
+      };
+      
+      canvas.onmousemove = (e) => {
+        if (isDragging) {
+          const rect = canvas.getBoundingClientRect();
+          const mx = e.clientX - rect.left;
+          x = (mx - equilibrium) / 2;
+          x = Math.max(-100, Math.min(100, x));
+          v = 0;
+        }
+      };
+      
+      canvas.onmouseup = () => { isDragging = false; };
+      canvas.onmouseleave = () => { isDragging = false; };
+      
+      function update() {
+        if (isDragging) return;
+        
+        const dt = 0.05;
+        const F = -k * x - c * v;
+        const a = F / m;
+        v += a * dt;
+        x += v * dt;
+        
+        history.push(x);
+        if (history.length > 200) history.shift();
+      }
+      
+      function drawSpring(x1, y1, x2, y2, coils) {
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        
+        const dx = x2 - x1;
+        const dy = y2 - y1;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        const amplitude = 15;
+        const segments = coils * 4;
+        
+        for (let i = 1; i <= segments; i++) {
+          const t = i / segments;
+          const px = x1 + dx * t;
+          const offset = amplitude * Math.sin(t * coils * Math.PI * 2);
+          const py = y1 + dy * t + offset;
+          ctx.lineTo(px, py);
+        }
+        
+        ctx.strokeStyle = '#4a9eff';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+      }
+      
+      function draw() {
+        ctx.fillStyle = '#0d0d15';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        const massX = equilibrium + x * 2;
+        const massY = 150;
+        
+        // Wall
+        ctx.fillStyle = '#444';
+        ctx.fillRect(40, 100, 20, 100);
+        for (let i = 0; i < 5; i++) {
+          ctx.beginPath();
+          ctx.moveTo(40, 100 + i * 20);
+          ctx.lineTo(25, 115 + i * 20);
+          ctx.strokeStyle = '#444';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+        
+        // Spring
+        drawSpring(60, massY, massX - 35, massY, 12);
+        
+        // Mass
+        ctx.fillStyle = '#ff6b6b';
+        ctx.fillRect(massX - 35, massY - 30, 70, 60);
+        ctx.strokeStyle = '#ff8787';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(massX - 35, massY - 30, 70, 60);
+        
+        // Label on mass
+        ctx.fillStyle = '#fff';
+        ctx.font = 'bold 16px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('m', massX, massY + 6);
+        
+        // Damper (simplified)
+        ctx.strokeStyle = '#666';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(60, massY + 45);
+        ctx.lineTo(massX - 35, massY + 45);
+        ctx.stroke();
+        ctx.fillStyle = '#555';
+        ctx.fillRect(massX - 80, massY + 35, 30, 20);
+        
+        // Ground
+        ctx.strokeStyle = '#444';
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(equilibrium, 20);
+        ctx.lineTo(equilibrium, 280);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        
+        // History graph
+        ctx.strokeStyle = '#4a9eff';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        for (let i = 0; i < history.length; i++) {
+          const gx = 400 + i;
+          const gy = 150 - history[i] * 1.5;
+          if (i === 0) ctx.moveTo(gx, gy);
+          else ctx.lineTo(gx, gy);
+        }
+        ctx.stroke();
+        
+        // Graph border
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(400, 70, 200, 160);
+        ctx.fillStyle = '#a0a0b0';
+        ctx.font = '12px sans-serif';
+        ctx.fillText('Position vs Time', 500, 65);
+      }
+      
+      function animate() {
+        update();
+        draw();
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    // ========================================
+    // PROJECTILE MOTION SIMULATION
+    // ========================================
+    (function() {
+      const canvas = document.getElementById('projectileCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      let angle = 45, velocity = 40, drag = 0.02;
+      let showIdeal = true;
+      let projectiles = [];
+      let isAnimating = false;
+      
+      const groundY = 300;
+      const startX = 50;
+      const scale = 3;
+      
+      // Controls
+      const sliderAngle = document.getElementById('projAngle');
+      const sliderVel = document.getElementById('projVel');
+      const sliderDrag = document.getElementById('projDrag');
+      const checkIdeal = document.getElementById('projShowIdeal');
+      
+      sliderAngle.oninput = () => { angle = +sliderAngle.value; document.getElementById('projAngleVal').textContent = angle + '°'; drawStatic(); };
+      sliderVel.oninput = () => { velocity = +sliderVel.value; document.getElementById('projVelVal').textContent = velocity; drawStatic(); };
+      sliderDrag.oninput = () => { drag = +sliderDrag.value / 1000; document.getElementById('projDragVal').textContent = drag.toFixed(3); };
+      checkIdeal.onchange = () => { showIdeal = checkIdeal.checked; };
+      
+      document.getElementById('projReset').onclick = () => {
+        projectiles = [];
+        isAnimating = false;
+        document.getElementById('projRange').textContent = '—';
+        document.getElementById('projHeight').textContent = '—';
+        document.getElementById('projTime').textContent = '—';
+        drawStatic();
+      };
+      
+      document.getElementById('projLaunch').onclick = launch;
+      
+      function launch() {
+        const rad = angle * Math.PI / 180;
+        const vx = velocity * Math.cos(rad);
+        const vy = -velocity * Math.sin(rad);
+        
+        projectiles.push({
+          x: startX, y: groundY,
+          vx: vx, vy: vy,
+          trail: [],
+          idealTrail: [],
+          drag: drag,
+          maxHeight: 0,
+          range: 0,
+          time: 0,
+          done: false,
+          showIdeal: showIdeal
+        });
+        
+        // Pre-calculate ideal trajectory
+        if (showIdeal) {
+          const p = projectiles[projectiles.length - 1];
+          let ix = startX, iy = groundY;
+          let ivx = vx, ivy = vy;
+          const g = 9.8;
+          const dt = 0.02;
+          
+          while (iy <= groundY + 5 || ivy < 0) {
+            p.idealTrail.push({x: ix, y: iy});
+            ix += ivx * scale * dt;
+            ivy += g * dt;
+            iy += ivy * scale * dt;
+            if (iy > groundY) break;
+          }
+        }
+        
+        if (!isAnimating) {
+          isAnimating = true;
+          animate();
+        }
+      }
+      
+      function update() {
+        const g = 9.8;
+        const dt = 0.02;
+        
+        for (const p of projectiles) {
+          if (p.done) continue;
+          
+          // With drag: F_drag = -c * v * |v|
+          const speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+          const dragX = -p.drag * p.vx * speed;
+          const dragY = -p.drag * p.vy * speed;
+          
+          p.vx += dragX * dt;
+          p.vy += (g + dragY) * dt;
+          
+          p.x += p.vx * scale * dt;
+          p.y += p.vy * scale * dt;
+          p.time += dt;
+          
+          p.trail.push({x: p.x, y: p.y});
+          
+          const height = (groundY - p.y) / scale;
+          if (height > p.maxHeight) p.maxHeight = height;
+          
+          if (p.y >= groundY) {
+            p.done = true;
+            p.range = (p.x - startX) / scale;
+            
+            // Update display for last projectile
+            document.getElementById('projRange').textContent = p.range.toFixed(1) + ' m';
+            document.getElementById('projHeight').textContent = p.maxHeight.toFixed(1) + ' m';
+            document.getElementById('projTime').textContent = p.time.toFixed(2) + ' s';
+          }
+        }
+        
+        // Check if all done
+        if (projectiles.every(p => p.done)) {
+          isAnimating = false;
+        }
+      }
+      
+      function drawStatic() {
+        ctx.fillStyle = '#0d0d15';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        // Ground
+        ctx.fillStyle = '#2a2a3a';
+        ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
+        
+        // Grid
+        ctx.strokeStyle = '#1a1a25';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < canvas.width; x += 50) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, groundY);
+          ctx.stroke();
+        }
+        for (let y = 0; y < groundY; y += 50) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(canvas.width, y);
+          ctx.stroke();
+        }
+        
+        // Launcher
+        const rad = angle * Math.PI / 180;
+        ctx.save();
+        ctx.translate(startX, groundY);
+        ctx.rotate(-rad);
+        ctx.fillStyle = '#4a9eff';
+        ctx.fillRect(-5, -8, 40, 16);
+        ctx.restore();
+        
+        // Angle arc
+        ctx.strokeStyle = '#666';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(startX, groundY, 30, -rad, 0);
+        ctx.stroke();
+        
+        // Velocity preview arrow
+        ctx.strokeStyle = 'rgba(74, 158, 255, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(startX, groundY);
+        ctx.lineTo(startX + velocity * Math.cos(rad) * 2, groundY - velocity * Math.sin(rad) * 2);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      
+      function draw() {
+        drawStatic();
+        
+        for (const p of projectiles) {
+          // Ideal trajectory (dashed, green)
+          if (p.showIdeal && p.idealTrail.length > 1) {
+            ctx.strokeStyle = '#4ecdc4';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(p.idealTrail[0].x, p.idealTrail[0].y);
+            for (const pt of p.idealTrail) {
+              ctx.lineTo(pt.x, pt.y);
+            }
+            ctx.stroke();
+            ctx.setLineDash([]);
+          }
+          
+          // Actual trajectory
+          if (p.trail.length > 1) {
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(p.trail[0].x, p.trail[0].y);
+            for (const pt of p.trail) {
+              ctx.lineTo(pt.x, pt.y);
+            }
+            ctx.stroke();
+          }
+          
+          // Projectile
+          if (!p.done) {
+            ctx.fillStyle = '#ff6b6b';
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 8, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#ff8787';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+          }
+        }
+        
+        // Legend
+        ctx.fillStyle = '#a0a0b0';
+        ctx.font = '12px sans-serif';
+        ctx.fillText('Red: with drag', 500, 20);
+        ctx.fillText('Teal: ideal (no drag)', 500, 35);
+      }
+      
+      function animate() {
+        if (!isAnimating) return;
+        update();
+        draw();
+        requestAnimationFrame(animate);
+      }
+      
+      drawStatic();
+    })();
+  </script>
+
+  </main>
+</body>
+</html>
